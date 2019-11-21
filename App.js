@@ -12,7 +12,7 @@ LoginScreen: {
     screen: Main
   },
 }, {
-    initialRouteName: 'LoginScreen',
+    initialRouteName: 'MainScreen',
     headerMode: 'none'
 });
 

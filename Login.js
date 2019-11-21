@@ -121,7 +121,7 @@ export default class Login extends Component {
            var json = JSON.parse(JSON.stringify(snapshot.val()));
            if(password == json[username].password){
              origin.clearUserNamePassword();
-             navigate("MainScreen");
+             navigate("MainScreen", {user: username});
            }else{
              alert("Invalid username or password.");
            }
@@ -159,7 +159,7 @@ export default class Login extends Component {
        else{
            users.child(username).set({ password: password }).then(function(snapshot) {
                origin.clearUserNamePassword();
-               navigate("MainScreen"); // some success method
+               navigate("MainScreen", {user: username}); // some success method
            }, function(error) {
              alert('Error submitting form: ' + error);
            });

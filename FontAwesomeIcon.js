@@ -19,7 +19,7 @@ export default class FontAwesomeIcon extends Component {
   render() {
     return (
         this.state.fontLoaded ? (
-          <Text style={[styles.icon, this.props.style]}>{this.props.icon}</Text>
+          <Text onPress={this.props.onPress} style={[styles.icon, this.props.style]}>{this.props.icon}</Text>
 
         ) : null
     );

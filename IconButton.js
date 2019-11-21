@@ -19,9 +19,9 @@ export default class IconButton extends Component {
   }
   render() {
     return (
-      <View style={[styles.parent, this.props.style]}>
-        <FontAwesomeIcon style={this.props.iconStyle} icon={this.props.icon}/>
-        <Text style={[styles.text, this.props.textStyle]}>{this.props.text}</Text>
+      <View style={[styles.parent, this.props.style]} onPress={this.props.onPress}>
+        <FontAwesomeIcon onPress={this.props.onPress} style={this.props.iconStyle} icon={this.props.icon}/>
+        <Text onPress={this.props.onPress} style={[styles.text, this.props.textStyle]}>{this.props.text}</Text>
       </View>
     );
   }

@@ -5,6 +5,7 @@ import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-
 import { parseIconFromClassName } from 'react-native-fontawesome';
 import * as Font from 'expo-font';
 import  IconButton  from './IconButton';
+import { withNavigationFocus } from 'react-navigation';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -12,7 +13,15 @@ const instructions = Platform.select({
 });
 const validIcon = parseIconFromClassName('fas fa-plus')
 
-export default class Main extends Component {
+class Main extends Component {
+  constructor(props) {
+    super(props);
+    this.user = "";
+    this.emergencyRoomButtonClick = this.emergencyRoomButtonClick.bind(this);
+    this.requireLogin = this.requireLogin.bind(this);
+    this.detoxButtonClick = this.detoxButtonClick.bind(this);
+    this.block = false;
+  }
   state = {
     fontLoaded: false,
   };
@@ -24,6 +33,11 @@ export default class Main extends Component {
     this.setState({ fontLoaded: true });
   }
   render() {
+    try {
+        this.user = this.props.navigation.state.params.user;
+    }
+    catch(error) {
+    }
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
@@ -42,6 +56,11 @@ export default class Main extends Component {
               ) : null
             }
           </View>
+          {
+            this.user != "" ? (
+              <Text style={styles.welcomeTitle}>Hey, {this.user}!</Text>
+            ): <Text style={styles.welcomeTitle}></Text>
+          }
           <View style={styles.card}>
             <Text style={styles.cardTitle}>What are you looking for?</Text>
             <View style={styles.cardContent}>
@@ -50,13 +69,15 @@ export default class Main extends Component {
                 iconStyle=""
                 textStyle=""
                 icon="&#xf0f8;"
-                text="Emergency Room"/>
+                text="Emergency Room"
+                onPress={()=>this.emergencyRoomButtonClick()}/>
               <IconButton
                 style={styles.cardContentButton}
                 iconStyle=""
                 textStyle=""
                 icon="&#xf2cc;"
-                text="Detox"/>
+                text="Detox"
+                onPress={()=>this.detoxButtonClick()}/>
               <IconButton
                 style={styles.cardContentButton}
                 iconStyle=""
@@ -87,10 +108,50 @@ export default class Main extends Component {
       </ImageBackground>
     );
   }
+
+  requireLogin(){
+    this.block = true;
+    const { navigate } = this.props.navigation;
+    if(this.user == ""){
+      navigate("LoginScreen");
+    }else{
+      alert("Hi");
+    }
+  }
+
+  emergencyRoomButtonClick(){
+    origin = this;
+    alert("1");
+    this.requireLogin();
+    const didBlurSubscription = this.props.navigation.addListener(
+      'willFocus',
+      payload => {
+        if(origin.user == ""){
+          alert("No User");
+        }else{
+          alert("Hey Phil");
+        }
+        didBlurSubscription.remove();
+      }
+    );
+  }
+
+  detoxButtonClick(){
+    alert("hi");
+  }
+
 }
 
 const styles = StyleSheet.create({
 
+  welcomeTitle:{
+    textAlignVertical: "center",
+    fontSize: 30,
+    padding: 10,
+    paddingBottom: 0,
+    color: "#fff",
+    marginTop: 10
+  },
   mainContainer:{
     flex: 1,
     width: '100%',
@@ -132,7 +193,8 @@ const styles = StyleSheet.create({
     color: "#fff"
   },
   card:{
-    marginTop: 15,
+    marginTop: 5,
+    marginBottom: 5,
     padding: 15,
     paddingTop: 5,
     backgroundColor: "#fff",
@@ -157,3 +219,5 @@ const styles = StyleSheet.create({
     width: 100
   }
 });
+
+export default withNavigationFocus(Main);
