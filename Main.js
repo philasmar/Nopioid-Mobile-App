@@ -20,6 +20,7 @@ class Main extends Component {
     this.emergencyRoomButtonClick = this.emergencyRoomButtonClick.bind(this);
     this.requireLogin = this.requireLogin.bind(this);
     this.detoxButtonClick = this.detoxButtonClick.bind(this);
+    this.emergencyRoomAction = this.emergencyRoomAction.bind(this);
     this.block = false;
   }
   state = {
@@ -114,30 +115,38 @@ class Main extends Component {
     const { navigate } = this.props.navigation;
     if(this.user == ""){
       navigate("LoginScreen");
+      return true;
     }else{
-      alert("Hi");
+      return false;
     }
+  }
+
+  emergencyRoomAction(){
+    alert("Feature Coming Soon!");
   }
 
   emergencyRoomButtonClick(){
     origin = this;
-    alert("1");
-    this.requireLogin();
-    const didBlurSubscription = this.props.navigation.addListener(
-      'willFocus',
-      payload => {
-        if(origin.user == ""){
-          alert("No User");
-        }else{
-          alert("Hey Phil");
+    result = this.requireLogin();
+    if(result){
+      const didBlurSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+          if(origin.user == ""){
+
+          }else{
+            this.emergencyRoomAction();
+          }
+          didBlurSubscription.remove();
         }
-        didBlurSubscription.remove();
-      }
-    );
+      );
+    }else{
+      this.emergencyRoomAction();
+    }
   }
 
   detoxButtonClick(){
-    alert("hi");
+    // alert("hi");
   }
 
 }
