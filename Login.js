@@ -34,6 +34,7 @@ export default class Login extends Component {
         super(props);
       this.createAccountButtonClick = this.createAccountButtonClick.bind(this);
       this.clearUserNamePassword = this.clearUserNamePassword.bind(this);
+      this.loginButtonClick = this.loginButtonClick.bind(this);
       this.state = {isLoggedIn : false, email :"", password : ""};
     }
   state = {
@@ -63,7 +64,32 @@ export default class Login extends Component {
   }
 
   loginButtonClick(){
-    alert("hi");
+      usernameTextInput = this.usernameTextInput;
+      passwordTextInput = this.passwordTextInput;
+      origin = this;
+      const { navigate } = this.props.navigation;
+      var username = this.state.email.toLowerCase();
+      var password = this.state.password;
+      if(username != "" && password != ""){
+        var users = db.ref('/nopioid-mobile-app').child("users");
+        users.once('value', function(snapshot) {
+         if (snapshot.hasChild(username)) {
+           var json = JSON.parse(JSON.stringify(snapshot.val()));
+           if(password == json[username].password){
+             origin.clearUserNamePassword();
+             navigate("MainScreen");
+           }else{
+             alert("Invalid username or password.");
+           }
+         }
+         else{
+           alert("Invalid username or password.");
+         }
+       });
+      }
+      else{
+        alert("Invalid username or password.");
+      }
   }
 
   clearUserNamePassword(){
@@ -81,7 +107,6 @@ export default class Login extends Component {
     var username = this.state.email.toLowerCase();
     var password = this.state.password;
     if(username != "" && password != ""){
-      var userExists = false;
       var users = db.ref('/nopioid-mobile-app').child("users");
       users.once('value', function(snapshot) {
        if (snapshot.hasChild(username)) {
