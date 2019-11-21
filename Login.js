@@ -33,6 +33,7 @@ export default class Login extends Component {
   constructor(props) {
         super(props);
       this.createAccountButtonClick = this.createAccountButtonClick.bind(this);
+      this.clearUserNamePassword = this.clearUserNamePassword.bind(this);
       this.state = {isLoggedIn : false, email :"", password : ""};
     }
   state = {
@@ -52,8 +53,8 @@ export default class Login extends Component {
         style={styles.imageBackground}>
         <View style={styles.mainContainer}>
           <Text style={styles.mainTitle}>Nopioid</Text>
-          <TextInput placeholder="Username" style={styles.loginTextBox} onChangeText = {(text) => this.setState({email : text})}/>
-          <TextInput placeholder="Password" style={styles.loginTextBox} onChangeText = {(text) => this.setState({password : text})}/>
+          <TextInput ref={input => { this.usernameTextInput = input }} placeholder="Username" style={styles.loginTextBox} onChangeText = {(text) => this.setState({email : text})}/>
+          <TextInput ref={input => { this.passwordTextInput = input }} secureTextEntry={true} placeholder="Password" style={styles.loginTextBox} onChangeText = {(text) => this.setState({password : text})}/>
           <Text onPress={this.loginButtonClick} style={styles.loginButton}>Login</Text>
           <Text onPress={this.createAccountButtonClick} style={styles.loginButton}>Create Account</Text>
         </View>
@@ -65,37 +66,36 @@ export default class Login extends Component {
     alert("hi");
   }
 
+  clearUserNamePassword(){
+    usernameTextInput.clear();
+    passwordTextInput.clear();
+    this.setState({email : ""});
+    this.setState({password : ""});
+  }
+
   createAccountButtonClick(){
+    usernameTextInput = this.usernameTextInput;
+    passwordTextInput = this.passwordTextInput;
+    origin = this;
     const { navigate } = this.props.navigation;
     var username = this.state.email.toLowerCase();
     var password = this.state.password;
     if(username != "" && password != ""){
-      db.ref('/nopioid-mobile-app/users/' + username).on("value", function(snapshot) {
-        if (snapshot.val()){
-          alert("This user already exists.");
-        }else{
-          db.ref('/nopioid-mobile-app/users/' + username).push({
-            username: username,
-            password: password
-          }).then(function(snapshot) {
-              navigate("MainScreen"); // some success method
-          }, function(error) {
-              console.log('Error submitting form: ' + error);
-  						$("#questionerror").css("display", "block");
-          });
-        }
-  			// var json = JSON.parse(JSON.stringify(snapshot.val()));
-        // if (Object.keys(json).length > 0){
-        //   alert("This user already exists.");
-        //   return;
-        // }else{
-        //
-        // }
-      });
-      // db.ref('/nopioid-mobile-app/users').push({
-      //   username: "hi",
-      //   password: ""
-      // });
+      var userExists = false;
+      var users = db.ref('/nopioid-mobile-app').child("users");
+      users.once('value', function(snapshot) {
+       if (snapshot.hasChild(username)) {
+         alert("This user already exists.");
+       }
+       else{
+           users.child(username).set({ password: password }).then(function(snapshot) {
+               origin.clearUserNamePassword();
+               navigate("MainScreen"); // some success method
+           }, function(error) {
+             alert('Error submitting form: ' + error);
+           });
+       }
+     });
     }
     else{
       alert("Kindly enter a valid username and password.");
