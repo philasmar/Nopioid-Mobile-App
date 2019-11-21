@@ -7,7 +7,51 @@ import * as Font from 'expo-font';
 import  IconButton  from './IconButton';
 import  TextBox  from './TextBox';
 import Firebase from 'firebase';
+import {InteractionManager} from 'react-native';
 
+const _setTimeout = global.setTimeout;
+const _clearTimeout = global.clearTimeout;
+const MAX_TIMER_DURATION_MS = 60 * 1000;
+if (Platform.OS === 'android') {
+// Work around issue `Setting a timer for long time`
+// see: https://github.com/firebase/firebase-js-sdk/issues/97
+    const timerFix = {};
+    const runTask = (id, fn, ttl, args) => {
+        const waitingTime = ttl - Date.now();
+        if (waitingTime <= 1) {
+            InteractionManager.runAfterInteractions(() => {
+                if (!timerFix[id]) {
+                    return;
+                }
+                delete timerFix[id];
+                fn(...args);
+            });
+            return;
+        }
+
+        const afterTime = Math.min(waitingTime, MAX_TIMER_DURATION_MS);
+        timerFix[id] = _setTimeout(() => runTask(id, fn, ttl, args), afterTime);
+    };
+
+    global.setTimeout = (fn, time, ...args) => {
+        if (MAX_TIMER_DURATION_MS < time) {
+            const ttl = Date.now() + time;
+            const id = '_lt_' + Object.keys(timerFix).length;
+            runTask(id, fn, ttl, args);
+            return id;
+        }
+        return _setTimeout(fn, time, ...args);
+    };
+
+    global.clearTimeout = id => {
+        if (typeof id === 'string' && id.startsWith('_lt_')) {
+            _clearTimeout(timerFix[id]);
+            delete timerFix[id];
+            return;
+        }
+        _clearTimeout(id);
+    };
+}
 let config = {
   apiKey: "AIzaSyCBJehn1x9TRi8o9sD947Y8JIKI5niZb1w",
   authDomain: "nopioid-c9618.firebaseapp.com",
@@ -130,8 +174,8 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   loginButton:{
+    maxWidth: 500,
     backgroundColor: "#ad2ea1",
-    width: 400,
     marginTop: 10,
     fontSize: 20,
     borderRadius: 5,
@@ -141,9 +185,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#ddd",
     overflow:"hidden",
+    alignSelf: "center",
+    width: "100%"
   },
   loginTextBox:{
-    width: 400,
+    maxWidth: 500,
     marginTop: 10,
     backgroundColor: "#fff",
     fontSize: 20,
@@ -151,16 +197,17 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#d1d1d1',
     padding: 10,
+    alignSelf: "center",
+    width: "100%"
   },
   mainContainer:{
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: 10,
+    padding: 20,
     paddingTop: 43,
     paddingBottom: 30,
     justifyContent: "center",
-    alignItems: "center"
   },
   imageBackground:{
     flex: 1,
