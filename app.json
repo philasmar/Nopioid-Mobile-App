@@ -3,7 +3,7 @@
   "displayName": "Nopioid",
   "expo": {
     "name": "Nopioid",
-    "slug": "expo-template-bare",
+    "slug": "nopioid-build",
     "privacy": "unlisted",
     "sdkVersion": "35.0.0",
     "version": "1.0.0",

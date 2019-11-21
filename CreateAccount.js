@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextInput, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
-
+import { NavigationActions, StackActions } from 'react-navigation';
 import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
 import { parseIconFromClassName } from 'react-native-fontawesome';
 import * as Font from 'expo-font';
@@ -61,7 +61,7 @@ const instructions = Platform.select({
 const validIcon = parseIconFromClassName('fas fa-plus');
 const vari = "";
 
-export default class Login extends Component {
+export default class CreateAccount extends Component {
   constructor(props) {
         super(props);
       this.createAccountButtonClick = this.createAccountButtonClick.bind(this);
@@ -85,10 +85,9 @@ export default class Login extends Component {
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
         <View style={styles.mainContainer}>
-          <Text style={styles.mainTitle}>Nopioid</Text>
+          <Text style={styles.mainTitle}>Create an Account</Text>
           <TextInput ref={input => { this.usernameTextInput = input }} placeholder="Username" style={styles.loginTextBox} onChangeText = {(text) => this.setState({email : text})}/>
           <TextInput ref={input => { this.passwordTextInput = input }} secureTextEntry={true} placeholder="Password" style={styles.loginTextBox} onChangeText = {(text) => this.setState({password : text})}/>
-          <Text onPress={this.loginButtonClick} style={styles.loginButton}>Login</Text>
           <Text onPress={this.createAccountButtonClick} style={styles.loginButton}>Create Account</Text>
         </View>
       </ImageBackground>
@@ -132,33 +131,34 @@ export default class Login extends Component {
   }
 
   createAccountButtonClick(){
-  const { navigate } = this.props.navigation;
-  navigate("CreateAccountScreen");
-    // usernameTextInput = this.usernameTextInput;
-    // passwordTextInput = this.passwordTextInput;
-    // origin = this;
-    // const { navigate } = this.props.navigation;
-    // var username = this.state.email.toLowerCase();
-    // var password = this.state.password;
-    // if(username != "" && password != ""){
-    //   var users = db.ref('/nopioid-mobile-app').child("users");
-    //   users.once('value', function(snapshot) {
-    //    if (snapshot.hasChild(username)) {
-    //      alert("This user already exists.");
-    //    }
-    //    else{
-    //        users.child(username).set({ password: password }).then(function(snapshot) {
-    //            origin.clearUserNamePassword();
-    //            navigate("MainScreen", {user: username}); // some success method
-    //        }, function(error) {
-    //          alert('Error submitting form: ' + error);
-    //        });
-    //    }
-    //  });
-    // }
-    // else{
-    //   alert("Kindly enter a valid username and password.");
-    // }
+    usernameTextInput = this.usernameTextInput;
+    passwordTextInput = this.passwordTextInput;
+    origin = this;
+    const { reset } = this.props.navigation;
+    var username = this.state.email.toLowerCase();
+    var password = this.state.password;
+    if(username != "" && password != ""){
+      var users = db.ref('/nopioid-mobile-app').child("users");
+      users.once('value', function(snapshot) {
+       if (snapshot.hasChild(username)) {
+         alert("This user already exists.");
+       }
+       else{
+           users.child(username).set({
+             password: password
+           }).then(function(snapshot) {
+               // origin.clearUserNamePassword();
+               reset([NavigationActions.navigate({ routeName: 'MainScreen', params: {user: username} })], 0);
+               // replace("MainScreen", {user: username}); // some success method
+           }, function(error) {
+             alert('Error submitting form: ' + error);
+           });
+       }
+     });
+    }
+    else{
+      alert("Kindly enter a valid username and password.");
+    }
   }
 }
 
