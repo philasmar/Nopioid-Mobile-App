@@ -1,18 +1,40 @@
 import React, { Component } from 'react';
-import { Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
+import { TextInput, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 
 import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
 import { parseIconFromClassName } from 'react-native-fontawesome';
 import * as Font from 'expo-font';
 import  IconButton  from './IconButton';
+import  TextBox  from './TextBox';
+import Firebase from 'firebase';
+
+let config = {
+  apiKey: "AIzaSyCBJehn1x9TRi8o9sD947Y8JIKI5niZb1w",
+  authDomain: "nopioid-c9618.firebaseapp.com",
+  databaseURL: "https://nopioid-c9618.firebaseio.com",
+  projectId: "nopioid-c9618",
+  storageBucket: "nopioid-c9618.appspot.com",
+  messagingSenderId: "993898990420",
+  appId: "1:993898990420:web:90cfaea25871b3a39d56c1",
+  measurementId: "G-9SL7LZ5NFE"
+};
+
+let app = Firebase.initializeApp(config);
+export const db = app.database();
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
 });
-const validIcon = parseIconFromClassName('fas fa-plus')
+const validIcon = parseIconFromClassName('fas fa-plus');
+const vari = "";
 
 export default class Login extends Component {
+  constructor(props) {
+        super(props);
+      this.createAccountButtonClick = this.createAccountButtonClick.bind(this);
+      this.state = {isLoggedIn : false, email :"", password : ""};
+    }
   state = {
     fontLoaded: false,
   };
@@ -29,68 +51,82 @@ export default class Login extends Component {
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
         <View style={styles.mainContainer}>
-          <View style={styles.actionBar}>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf0c9;</Text>
-              ) : null
-            }
-            <Text style={styles.mainTitle}>Nopioid</Text>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf007;</Text>
-              ) : null
-            }
-          </View>
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>What are you looking for?</Text>
-            <View style={styles.cardContent}>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf0f8;"
-                text="Emergency Room"/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf2cc;"
-                text="Detox"/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf594;"
-                text="Inpatient Rehab"/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf0fe;"
-                text="Outpatient Rehab"/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf015;"
-                text="Sober House"/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf4c4;"
-                text="Support Group"/>
-            </View>
-          </View>
+          <Text style={styles.mainTitle}>Nopioid</Text>
+          <TextInput placeholder="Username" style={styles.loginTextBox} onChangeText = {(text) => this.setState({email : text})}/>
+          <TextInput placeholder="Password" style={styles.loginTextBox} onChangeText = {(text) => this.setState({password : text})}/>
+          <Text onPress={this.loginButtonClick} style={styles.loginButton}>Login</Text>
+          <Text onPress={this.createAccountButtonClick} style={styles.loginButton}>Create Account</Text>
         </View>
       </ImageBackground>
     );
   }
+
+  loginButtonClick(){
+    alert("hi");
+  }
+
+  createAccountButtonClick(){
+    const { navigate } = this.props.navigation;
+    var username = this.state.email.toLowerCase();
+    var password = this.state.password;
+    if(username != "" && password != ""){
+      db.ref('/nopioid-mobile-app/users/' + username).on("value", function(snapshot) {
+        if (snapshot.val()){
+          alert("This user already exists.");
+        }else{
+          db.ref('/nopioid-mobile-app/users/' + username).push({
+            username: username,
+            password: password
+          }).then(function(snapshot) {
+              navigate("MainScreen"); // some success method
+          }, function(error) {
+              console.log('Error submitting form: ' + error);
+  						$("#questionerror").css("display", "block");
+          });
+        }
+  			// var json = JSON.parse(JSON.stringify(snapshot.val()));
+        // if (Object.keys(json).length > 0){
+        //   alert("This user already exists.");
+        //   return;
+        // }else{
+        //
+        // }
+      });
+      // db.ref('/nopioid-mobile-app/users').push({
+      //   username: "hi",
+      //   password: ""
+      // });
+    }
+    else{
+      alert("Kindly enter a valid username and password.");
+    }
+  }
 }
 
 const styles = StyleSheet.create({
-
+  loginButton:{
+    backgroundColor: "#ad2ea1",
+    width: 400,
+    marginTop: 10,
+    fontSize: 20,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: '#cb2877',
+    padding: 10,
+    textAlign: "center",
+    color: "#ddd",
+    overflow:"hidden",
+  },
+  loginTextBox:{
+    width: 400,
+    marginTop: 10,
+    backgroundColor: "#fff",
+    fontSize: 20,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: '#d1d1d1',
+    padding: 10,
+  },
   mainContainer:{
     flex: 1,
     width: '100%',
@@ -98,62 +134,21 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 43,
     paddingBottom: 30,
+    justifyContent: "center",
+    alignItems: "center"
   },
   imageBackground:{
     flex: 1,
     width: '100%',
     height: '100%'
   },
-  actionBar: {
-    height: 50,
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
   mainTitle: {
-    fontSize: 32,
+    fontSize: 40,
     textAlign: 'center',
     textAlignVertical: "center",
     alignSelf: "center",
-    fontWeight: "500",
-    color: "#fff"
+    fontWeight: "700",
+    color: "#fff",
+    marginBottom: 30
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  actionButtons:{
-    fontFamily: "Font Awesome",
-    fontSize: 35,
-    textAlign: 'center',
-    textAlignVertical: "center",
-    padding: 5,
-    width: 60,
-    color: "#fff"
-  },
-  card:{
-    marginTop: 15,
-    padding: 15,
-    paddingTop: 5,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    borderWidth: 0.5,
-    borderColor: '#d1d1d1',
-  },
-  cardTitle:{
-    textAlign: 'center',
-    textAlignVertical: "center",
-    fontSize: 25,
-    padding: 10,
-  },
-  cardContent:{
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center"
-  },
-  cardContentButton:{
-    margin: 5,
-    // backgroundColor: "#00ff00",
-    width: 100
-  }
 });
