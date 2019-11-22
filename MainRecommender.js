@@ -235,32 +235,62 @@ class MainRecommender extends Component {
   }
 
   emergencyRoomButtonClick(){
-    this.setState({emergencyButtonClicked : true});
+    if (!this.state.emergencyButtonClicked) {
+      this.setState({emergencyButtonClicked : true});
+    }
+    else if (this.state.emergencyButtonClicked) {
+      this.setState({emergencyButtonClicked : false});
+    }
     // this.emergencyRoomButton.props.style = styles.cardContentButtonClicked;
   }
 
   detoxButtonClick(){
-    this.setState({detoxButtonClicked : true});
+    if (!this.state.detoxButtonClicked){
+      this.setState({detoxButtonClicked : true})
+    }
+    else if (this.state.detoxButtonClicked) {
+      this.setState({detoxButtonClicked : false})
+    }
     // this.emergencyRoomButton.props.style = styles.cardContentButtonClicked;
   }
 
   inpatientButtonClick(){
-    this.setState({inpatientrehabButtonClicked : true});
+    if (!this.state.inpatientrehabButtonClicked){
+      this.setState({inpatientrehabButtonClicked : true});
+    }
+    else if (this.state.inpatientrehabButtonClicked) {
+      this.setState({inpatientrehabButtonClicked : false})
+    }
     // this.emergencyRoomButton.props.style = styles.cardContentButtonClicked;
   }
 
   outpatientButtonClick(){
-    this.setState({outpatientrehabButtonClicked : true});
+    if (!this.state.outpatientrehabButtonClicked){
+      this.setState({outpatientrehabButtonClicked : true});
+    }
+    else if (this.state.outpatientrehabButtonClicked) {
+      this.setState({outpatientrehabButtonClicked : false})
+    }
     // this.emergencyRoomButton.props.style = styles.cardContentButtonClicked;
   }
 
   soberhouseButtonClick(){
-    this.setState({soberhouseButtonClicked : true});
+    if (!this.state.soberhouseButtonClicked){
+      this.setState({soberhouseButtonClicked : true});
+    }
+    else if (this.state.soberhouseButtonClicked) {
+      this.setState({soberhouseButtonClicked : false})
+    }
     // this.emergencyRoomButton.props.style = styles.cardContentButtonClicked;
   }
 
   supportgroupButtonClick(){
-    this.setState({supportgroupButtonClicked : true});
+    if (!this.state.supportgroupButtonClicked){
+      this.setState({supportgroupButtonClicked : true});
+    }
+    else if (this.state.supportgroupButtonClicked) {
+      this.setState({supportgroupButtonClicked : false})
+    }
     // this.emergencyRoomButton.props.style = styles.cardContentButtonClicked;
   }
 
