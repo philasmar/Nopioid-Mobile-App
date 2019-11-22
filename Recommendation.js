@@ -97,7 +97,22 @@ class Recommendation extends Component {
   // }
   async getRecommendations(){
     origin = this;
-    const json = await fetch('https://www.zipcodeapi.com/rest/gZA5DC6sorrMU4qOSdSCXqjuB2ixwXPl6ERebFAVHMbf3Vy9KetjLrYnr6qo6qY6/radius.json/' + "10044" + '/' + "5" + '/km', {
+
+   userzip = "";
+   insurance = ""
+    const zipp = await db.ref('/nopioid-mobile-app').child("users").once('value').then(function(snapshot) {
+        var json = JSON.parse(JSON.stringify(snapshot.val()));
+        // alert(json);
+        // userzip = json[username];
+        userzip = json[origin.user].zipcode;
+        insurance = json[origin.user].insurance;
+        // alert(userzip);
+      }).catch(function (err) {
+      // This is where errors land
+      // alert(err);
+    });
+
+    const json = await fetch('https://www.zipcodeapi.com/rest/gZA5DC6sorrMU4qOSdSCXqjuB2ixwXPl6ERebFAVHMbf3Vy9KetjLrYnr6qo6qY6/radius.json/' + userzip + '/' + "5" + '/km', {
              method: 'GET'
           })
           .then((response) => response.json());
@@ -105,17 +120,6 @@ class Recommendation extends Component {
     for (x in json.zip_codes){
       zipCodes.push(json.zip_codes[x].zip_code);
     }
-     userzip = "";
-    const zipp = await db.ref('/nopioid-mobile-app').child("users").once('value').then(function(snapshot) {
-        var json = JSON.parse(JSON.stringify(snapshot.val()));
-        // alert(json);
-        // userzip = json[username];
-        userzip = json[origin.user].zipcode;
-        // alert(userzip);
-      }).catch(function (err) {
-      // This is where errors land
-      // alert(err);
-    });
 
     itemList = [];
     existingPlaces = [];
@@ -127,7 +131,7 @@ class Recommendation extends Component {
         if (!(existingPlaces.includes(json[x].name)))
         {
           existingPlaces.push(json[x].name);
-          if(zipCodes.includes(json[x].zipcode) && origin.type == json[x].type){
+          if(zipCodes.includes(json[x].zipcode) && origin.type == json[x].type && insurance == json[x].insurance){
             itemList.push(
               <View key={x} style={styles.card}>
                 <Text style={styles.cardTitle}>{json[x].name}</Text>
