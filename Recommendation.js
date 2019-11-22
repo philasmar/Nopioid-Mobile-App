@@ -112,13 +112,15 @@ class Recommendation extends Component {
       // alert(err);
     });
 
-    const json = await fetch('https://www.zipcodeapi.com/rest/gZA5DC6sorrMU4qOSdSCXqjuB2ixwXPl6ERebFAVHMbf3Vy9KetjLrYnr6qo6qY6/radius.json/' + userzip + '/' + "5" + '/km', {
+    const json = await fetch('https://www.zipcodeapi.com/rest/gZA5DC6sorrMU4qOSdSCXqjuB2ixwXPl6ERebFAVHMbf3Vy9KetjLrYnr6qo6qY6/radius.json/' + userzip + '/' + "5" + '/mile', {
              method: 'GET'
           })
           .then((response) => response.json());
     zipCodes = [];
+    var zipDistance = {};
     for (x in json.zip_codes){
       zipCodes.push(json.zip_codes[x].zip_code);
+      zipDistance[json.zip_codes[x].zip_code] = json.zip_codes[x].distance;
     }
 
     itemList = [];
@@ -134,11 +136,15 @@ class Recommendation extends Component {
           if(zipCodes.includes(json[x].zipcode) && origin.type == json[x].type && insurance == json[x].insurance && origin.user != json[x].user){
             itemList.push(
               <View key={x} style={styles.card}>
-                <Text style={styles.cardTitle}>{json[x].name}</Text>
+                <View style={styles.cardMenuBar}>
+                  <Text style={styles.cardTitle}>{json[x].name}</Text>
+                  <Text style={styles.cardTitle}>{zipDistance[json[x].zipcode]}mi</Text>
+                </View>
                 <View style={styles.cardContentColumn}>
                   <Text style={styles.cardDetail}>Buprenorphine Treatment Available: {json[x].buprenorphineTreatment + ""}</Text>
                   <Text style={styles.cardDetail}>Drug Screening Requested: {json[x].drugScreening + ""}</Text>
                   <Text style={styles.cardDetail}>Housing Service: {json[x].housingService + ""}</Text>
+                  <Text style={styles.cardDetail}>Methadone Treatment Available: {json[x].methadoneTreatment + ""}</Text>
                 </View>
               </View>
             );
