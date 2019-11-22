@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 
 import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
 import { parseIconFromClassName } from 'react-native-fontawesome';
 import * as Font from 'expo-font';
 import  IconButton  from './IconButton';
 import { withNavigationFocus } from 'react-navigation';
+import firebase from './FirebaseDatabase';
 
+export const db = firebase.database();
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
@@ -55,10 +57,12 @@ class Recommendation extends Component {
               ) : null
             }
           </View>
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>We found these places for you</Text>
-          </View>
-          {this.state.itemList}
+          <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>We found these places for you</Text>
+            </View>
+            {this.state.itemList}
+          </ScrollView>
         </View>
       </ImageBackground>
     );
@@ -66,14 +70,25 @@ class Recommendation extends Component {
 
   getRecommendations(){
     itemList = [];
-    for (var i = 0; i < 4; i++){
-      itemList.push(
-        <View key={i} style={styles.card}>
-          <Text style={styles.cardTitle}>We found these places for you</Text>
-        </View>
-      );
-    }
-    this.setState({itemList: itemList});
+    origin = this;
+    var recommendations = db.ref('/nopioid-mobile-app/experiences');
+    recommendations.once('value', function(snapshot) {
+      var json = JSON.parse(JSON.stringify(snapshot.val()));
+      for(x in json){
+        itemList.push(
+          <View key={x} style={styles.card}>
+            <Text style={styles.cardTitle}>{json[x].name}</Text>
+            <View style={styles.cardContentColumn}>
+              <Text style={styles.cardDetail}>Buprenorphine Treatment Available: {json[x].buprenorphineTreatment + ""}</Text>
+              <Text style={styles.cardDetail}>Drug Screening Requested: {json[x].drugScreening + ""}</Text>
+              <Text style={styles.cardDetail}>Housing Service: {json[x].housingService + ""}</Text>
+            </View>
+          </View>
+        );
+      }
+      origin.setState({itemList: itemList});
+    });
+
   }
   requireLogin(){
     this.block = true;
@@ -117,7 +132,10 @@ class Recommendation extends Component {
 }
 
 const styles = StyleSheet.create({
-
+  cardDetail:{
+    padding: 7,
+    fontSize: 20,
+  },
   welcomeTitle:{
     textAlignVertical: "center",
     fontSize: 30,
