@@ -5,6 +5,7 @@ import Main from "./Main";
 import Login from "./Login";
 import History from "./History";
 import CreateAccount from "./CreateAccount";
+import PastExperience from "./PastExperience";
 
 const AppNavigator = createStackNavigator({
     LoginScreen: {
@@ -19,8 +20,11 @@ const AppNavigator = createStackNavigator({
     CreateAccountScreen: {
       screen: CreateAccount
     },
+    PastExperienceScreen: {
+      screen: PastExperience
+    },
   }, {
-  initialRouteName: 'CreateAccountScreen',
+  initialRouteName: 'PastExperienceScreen',
   headerMode: 'none'
 });
 
