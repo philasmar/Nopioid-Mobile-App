@@ -20,6 +20,10 @@ class Main extends Component {
     this.emergencyRoomButtonClick = this.emergencyRoomButtonClick.bind(this);
     this.requireLogin = this.requireLogin.bind(this);
     this.detoxButtonClick = this.detoxButtonClick.bind(this);
+    this.inRehabButtonClick = this.inRehabButtonClick.bind(this);
+    this.outRehabButtonClick = this.outRehabButtonClick.bind(this);
+    this.soberHouseButtonClick = this.soberHouseButtonClick.bind(this);
+    this.supportGroupButtonClick = this.supportGroupButtonClick.bind(this);
     this.emergencyRoomAction = this.emergencyRoomAction.bind(this);
     this.block = false;
   }
@@ -84,25 +88,29 @@ class Main extends Component {
                 iconStyle=""
                 textStyle=""
                 icon="&#xf594;"
-                text="Inpatient Rehab"/>
+                text="Inpatient Rehab"
+                onPress={()=>this.inRehabButtonClick()}/>
               <IconButton
                 style={styles.cardContentButton}
                 iconStyle=""
                 textStyle=""
                 icon="&#xf0fe;"
-                text="Outpatient Rehab"/>
+                text="Outpatient Rehab"
+                onPress={()=>this.outRehabButtonClick()}/>
               <IconButton
                 style={styles.cardContentButton}
                 iconStyle=""
                 textStyle=""
                 icon="&#xf015;"
-                text="Sober House"/>
+                text="Sober House"
+                onPress={()=>this.soberHouseButtonClick()}/>
               <IconButton
                 style={styles.cardContentButton}
                 iconStyle=""
                 textStyle=""
                 icon="&#xf4c4;"
-                text="Support Group"/>
+                text="Support Group"
+                onPress={()=>this.supportGroupButtonClick()}/>
             </View>
           </View>
         </View>
@@ -147,6 +155,103 @@ class Main extends Component {
 
   detoxButtonClick(){
     // alert("hi");
+    origin = this;
+    result = this.requireLogin();
+    if(result){
+      const didBlurSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+          if(origin.user == ""){
+
+          }else{
+            this.detoxAction();
+          }
+          didBlurSubscription.remove();
+        }
+      );
+    }else{
+      this.detoxAction();
+    }
+  }
+  inRehabButtonClick(){
+    // alert("hi");
+    origin = this;
+    result = this.requireLogin();
+    if(result){
+      const didBlurSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+          if(origin.user == ""){
+
+          }else{
+            this.inRehabAction();
+          }
+          didBlurSubscription.remove();
+        }
+      );
+    }else{
+      this.inRehabAction();
+    }
+  }
+  outRehabButtonClick(){
+    // alert("hi");
+    origin = this;
+    result = this.requireLogin();
+    if(result){
+      const didBlurSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+          if(origin.user == ""){
+
+          }else{
+            this.outRehabAction();
+          }
+          didBlurSubscription.remove();
+        }
+      );
+    }else{
+      this.outRehabAction();
+    }
+  }
+  soberHouseButtonClick(){
+    // alert("hi");
+    origin = this;
+    result = this.requireLogin();
+    if(result){
+      const didBlurSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+          if(origin.user == ""){
+
+          }else{
+            this.soberHouseAction();
+          }
+          didBlurSubscription.remove();
+        }
+      );
+    }else{
+      this.soberHouseAction();
+    }
+  }
+  supportGroupButtonClick(){
+    // alert("hi");
+    origin = this;
+    result = this.requireLogin();
+    if(result){
+      const didBlurSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+          if(origin.user == ""){
+
+          }else{
+            this.supportGroupAction();
+          }
+          didBlurSubscription.remove();
+        }
+      );
+    }else{
+      this.supportGroupAction();
+    }
   }
 
 }
