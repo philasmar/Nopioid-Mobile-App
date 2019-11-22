@@ -33,6 +33,7 @@ class PastExperience extends Component {
       buprenorphineTreatment : false,
       rating : ""
     };
+    this.insurance = "";
   }
   state = {
     fontLoaded: false,
@@ -47,6 +48,17 @@ class PastExperience extends Component {
   render() {
     try {
         this.user = this.props.navigation.state.params.user;
+        origin = this;
+        user = this.props.navigation.state.params.user;
+        if(this.insurance == ""){
+          var users = db.ref('/nopioid-mobile-app').child("users");
+          users.once('value', function(snapshot) {
+           if (snapshot.hasChild(user)) {
+             var json = JSON.parse(JSON.stringify(snapshot.val()));
+             origin.insurance = json[user].insurance;
+           }
+          });
+        }
     }
     catch(error) {
     }
@@ -155,6 +167,7 @@ class PastExperience extends Component {
     var buprenorphineTreatment = this.state.buprenorphineTreatment;
     var rating = this.state.rating;
 
+
     if (/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipcode))
     {
     }else{
@@ -166,6 +179,7 @@ class PastExperience extends Component {
       rating != ""){
       var users = db.ref('/nopioid-mobile-app').child("experiences");
       users.push({
+        insurance: origin.insurance,
         user: origin.user,
         type: this.stages[0],
         name: name,
