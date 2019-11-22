@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 
 import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
 import { parseIconFromClassName } from 'react-native-fontawesome';
@@ -54,7 +54,7 @@ class Recommendation extends Component {
           <View style={styles.actionBar}>
             {
               this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf0c9;</Text>
+                <Text style={styles.actionButtons}>&#xf7a4;</Text>
               ) : null
             }
             <Text style={styles.mainTitle}>Nopioid</Text>
@@ -65,9 +65,8 @@ class Recommendation extends Component {
             }
           </View>
           <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>We found these places for you</Text>
-            </View>
+            <Text style={[styles.cardTitle, {fontSize: 25}]}>We found these places for you</Text>
+            <Text style={styles.cardTitle}></Text>
             {this.state.itemList}
           </ScrollView>
         </View>
@@ -141,10 +140,10 @@ class Recommendation extends Component {
                   <Text style={styles.cardTitle}>{zipDistance[json[x].zipcode]}mi</Text>
                 </View>
                 <View style={styles.cardContentColumn}>
-                  <Text style={styles.cardDetail}>Buprenorphine Treatment Available: {json[x].buprenorphineTreatment + ""}</Text>
-                  <Text style={styles.cardDetail}>Drug Screening Requested: {json[x].drugScreening + ""}</Text>
-                  <Text style={styles.cardDetail}>Housing Service: {json[x].housingService + ""}</Text>
-                  <Text style={styles.cardDetail}>Methadone Treatment Available: {json[x].methadoneTreatment + ""}</Text>
+                  <Text style={styles.cardDetail}>Buprenorphine Treatment {json[x].buprenorphineTreatment? "Available": "Not Available"}</Text>
+                  <Text style={styles.cardDetail}>Drug Screening {json[x].drugScreening? "Requested": "Not Requested"}</Text>
+                  <Text style={styles.cardDetail}>Housing Service {json[x].housingService? "Available": "Not Available"}</Text>
+                  <Text style={styles.cardDetail}>Methadone Treatment {json[x].methadoneTreatment? "Available": "Not Available"}</Text>
                 </View>
               </View>
             );
@@ -200,8 +199,11 @@ class Recommendation extends Component {
 const styles = StyleSheet.create({
 
   scrollView:{
-    marginTop: 40,
+    marginTop: 10,
     width: "100%",
+    padding: 20,
+    paddingBottom: 0,
+    paddingTop: 0
   },
   scrollViewContainer:{
     alignItems: "center"
@@ -209,6 +211,7 @@ const styles = StyleSheet.create({
   cardDetail:{
     padding: 7,
     fontSize: 20,
+    color: "#fff"
   },
   welcomeTitle:{
     textAlignVertical: "center",
@@ -266,23 +269,24 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     padding: 15,
     paddingTop: 5,
-    backgroundColor: "#fff",
+    flex: 1,
     borderRadius: 20,
-    borderWidth: 0.5,
-    borderColor: '#d1d1d1',
-    maxWidth: 750,
+    borderWidth: 2,
+    borderColor: '#fff',
     width: "100%"
   },
   cardTitle:{
     textAlign: 'center',
     textAlignVertical: "center",
-    fontSize: 25,
+    fontSize: 20,
     padding: 10,
+    paddingBottom: 0,
+    color: "#fff",
+    fontWeight: "400"
   },
-  cardContent:{
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center"
+  cardContentColumn:{
+    marginTop: 30,
+    color: "#fff"
   },
   cardContentButton:{
     margin: 5,
