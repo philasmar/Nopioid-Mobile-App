@@ -93,39 +93,48 @@ class PastExperience extends Component {
           </View>
             <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>We want to personalize your experience!</Text>
-          </View>
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Tell us more about your {this.stages[0]} experience...</Text>
+            <Text style={styles.cardTitle}>Tell us more about your {this.stages[0]} Experience</Text>
             <View style={styles.cardContentColumn}>
               <TextInput ref={input => { this.nameTextInput = input }} placeholder="Name" style={styles.loginTextBox} onChangeText = {(text) => this.setState({name : text})}/>
               <TextInput keyboardType = 'numeric' ref={input => { this.zipcodeTextInput = input }} placeholder="Zip Code" style={styles.loginTextBox} onChangeText = {(text) => this.setState({zipcode : text})}/>
               <CheckBox
+                containerStyle={styles.checkboxStyle}
+                textStyle={styles.checkboxTextStyle}
                 title='Covered by your insurance?'
                 checked={this.state.coveredByInsurance}
                 onPress={() => this.setState({ coveredByInsurance: !this.state.coveredByInsurance })}
               />
               <CheckBox
+                containerStyle={styles.checkboxStyle}
+                textStyle={styles.checkboxTextStyle}
                 title='Drug screening required?'
                 checked={this.state.drugScreening}
                 onPress={() => this.setState({ drugScreening: !this.state.drugScreening })}
               />
               <CheckBox
+                containerStyle={styles.checkboxStyle}
+                textStyle={styles.checkboxTextStyle}
                 title='Housing service?'
                 checked={this.state.housingService}
                 onPress={() => this.setState({ housingService: !this.state.housingService })}
               />
               <CheckBox
+                containerStyle={styles.checkboxStyle}
+                textStyle={styles.checkboxTextStyle}
                 title='Transportation assistance?'
                 checked={this.state.transportationAssistance}
                 onPress={() => this.setState({ transportationAssistance: !this.state.transportationAssistance })}
               />
               <CheckBox
+                containerStyle={styles.checkboxStyle}
+                textStyle={styles.checkboxTextStyle}
                 title='Methadone treatment available?'
                 checked={this.state.methadoneTreatment}
                 onPress={() => this.setState({ methadoneTreatment: !this.state.methadoneTreatment })}
               />
               <CheckBox
+                containerStyle={styles.checkboxStyle}
+                textStyle={styles.checkboxTextStyle}
                 title='Buprenorphine treatment available?'
                 checked={this.state.buprenorphineTreatment}
                 onPress={() => this.setState({ buprenorphineTreatment: !this.state.buprenorphineTreatment })}
@@ -146,7 +155,7 @@ class PastExperience extends Component {
               </View>
             </View>
           </View>
-          <Text onPress={this.nextClick} style={styles.loginButton}>Next</Text>
+          <Text onPress={this.nextClick} style={styles.loginButton}>Save</Text>
           </ScrollView>
         </View>
       </ImageBackground>
@@ -217,11 +226,23 @@ class PastExperience extends Component {
 }
 
 const styles = StyleSheet.create({
+  checkboxStyle:{
+    backgroundColor: "rgba(255,255,255,0)",
+    borderWidth: 0,
+    margin: 10
+  },
+  checkboxTextStyle:{
+    fontSize: 20,
+    fontWeight: "300",
+    color: "#fff"
+  },
   itemTitle:{
     marginTop: 10,
     padding: 10,
     paddingBottom: 2,
-    fontSize: 20
+    fontSize: 25,
+    textAlign: "center",
+    color: "#fff"
   },
   scrollView:{
     marginTop: 40,
@@ -234,26 +255,30 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     alignSelf: "center",
     width: "100%",
+    padding: 7,
+    fontSize: 25,
   },
   ratingDropdownContainer:{
+    padding: 5,
     maxWidth: 500,
-    marginTop: 10,
+    marginTop: 15,
+    marginBottom: 10,
     alignSelf: "center",
     width: "100%",
     backgroundColor: "#fff",
-    borderRadius: 5,
+    borderRadius: 15,
     borderWidth: 0.5,
     borderColor: '#d1d1d1',
   },
   loginButton:{
-    maxWidth: 500,
-    backgroundColor: "#ad2ea1",
+    maxWidth: 180,
+    backgroundColor: "#000",
     marginTop: 10,
-    fontSize: 20,
-    borderRadius: 5,
+    fontSize: 23,
+    borderRadius: 15,
     borderWidth: 0.5,
     borderColor: '#cb2877',
-    padding: 10,
+    padding: 15,
     textAlign: "center",
     color: "#ddd",
     overflow:"hidden",
@@ -261,14 +286,15 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   loginTextBox:{
-    maxWidth: 500,
+    maxWidth: 550,
     marginTop: 10,
+    marginBottom: 5,
     backgroundColor: "#fff",
-    fontSize: 20,
-    borderRadius: 5,
+    fontSize: 25,
+    borderRadius: 15,
     borderWidth: 0.5,
     borderColor: '#d1d1d1',
-    padding: 10,
+    padding: 15,
     alignSelf: "center",
     width: "100%"
   },
@@ -284,7 +310,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: 10,
+    padding: 30,
     paddingTop: 43,
     paddingBottom: 30,
     alignItems: "center",
@@ -338,17 +364,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     padding: 15,
     paddingTop: 5,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    borderWidth: 0.5,
-    borderColor: '#d1d1d1',
+    // backgroundColor: "#fff",
     width: "100%"
   },
   cardTitle:{
     textAlign: 'center',
     textAlignVertical: "center",
-    fontSize: 25,
+    fontSize: 27,
     padding: 10,
+    fontWeight: "500",
+    color: "#fff"
   },
   cardContent:{
     flexDirection: "row",

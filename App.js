@@ -32,7 +32,7 @@ const AppNavigator = createStackNavigator({
       screen: Recommendation
     },
   }, {
-  initialRouteName: 'CreateAccountScreen',
+  initialRouteName: 'PastExperienceScreen',
   headerMode: 'none'
 });
 
