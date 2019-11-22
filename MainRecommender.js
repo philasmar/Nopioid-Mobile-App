@@ -317,7 +317,7 @@ class MainRecommender extends Component {
       stages.push("Support Group");
     }
     if(stages.length > 0){
-      push("PastExperienceScreen", {stages: stages});
+      push("PastExperienceScreen", {user: this.user, stages: stages});
     }
     else{
       alert("Recommendation screen coming soon!")

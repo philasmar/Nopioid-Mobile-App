@@ -6,8 +6,10 @@ import { parseIconFromClassName } from 'react-native-fontawesome';
 import * as Font from 'expo-font';
 import  IconButton  from './IconButton';
 import { withNavigationFocus } from 'react-navigation';
-import { stages } from './Properties'
+import { stages } from './Properties';
+import firebase from './FirebaseDatabase';
 
+export const db = firebase.database();
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
@@ -76,7 +78,7 @@ class PastExperience extends Component {
             <Text style={styles.cardTitle}>We want to personalize your experience!</Text>
           </View>
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Tell us more about your {this.stage} experience...</Text>
+            <Text style={styles.cardTitle}>Tell us more about your {this.stages[0]} experience...</Text>
             <View style={styles.cardContentColumn}>
               <TextInput ref={input => { this.nameTextInput = input }} placeholder="Name" style={styles.loginTextBox} onChangeText = {(text) => this.setState({name : text})}/>
               <TextInput keyboardType = 'numeric' ref={input => { this.zipcodeTextInput = input }} placeholder="Zip Code" style={styles.loginTextBox} onChangeText = {(text) => this.setState({zipcode : text})}/>
@@ -110,16 +112,18 @@ class PastExperience extends Component {
                 checked={this.state.buprenorphineTreatment}
                 onPress={() => this.setState({ buprenorphineTreatment: !this.state.buprenorphineTreatment })}
               />
+              <Text style={styles.itemTitle}>Helpfulness</Text>
               <View style={styles.ratingDropdownContainer}>
                 <Picker
-                  selectedValue={this.state.gender}
+                  selectedValue={this.state.rating}
                   style={styles.ratingDropdown}
                   onValueChange={(itemValue, itemIndex) => this.setState({ rating: itemValue })}>
                   <Picker.Item label="Rating" value="" />
-                  <Picker.Item label="Welcoming" value="1" />
-                  <Picker.Item label="Supportive" value="2" />
-                  <Picker.Item label="Effective" value="4" />
-                  <Picker.Item label="Overall" value="3" />
+                  <Picker.Item label="Very Dissatisfied" value="0" />
+                  <Picker.Item label="Dissatisfied" value="1" />
+                  <Picker.Item label="Neutral" value="2" />
+                  <Picker.Item label="Satisfied" value="3" />
+                  <Picker.Item label="Very Satisfied" value="4" />
                 </Picker>
               </View>
             </View>
@@ -134,11 +138,13 @@ class PastExperience extends Component {
 
   nextClick(){
     origin = this;
-    if (origin.user == ""){
+    if (!origin.user){
       const { replace } = this.props.navigation;
-      return replace("LoginScreen");
+      replace("LoginScreen");
+      return;
     }
     const { reset } = this.props.navigation;
+    const { replace } = this.props.navigation;
     var name = this.state.name;
     var zipcode = this.state.zipcode;
     var coveredByInsurance = this.state.coveredByInsurance;
@@ -158,42 +164,45 @@ class PastExperience extends Component {
       name != "" &&
       zipcode != "" &&
       rating != ""){
-      var users = db.ref('/nopioid-mobile-app').child("users");
-      users.once('value', function(snapshot) {
-       if (snapshot.hasChild(username)) {
-         alert("This user already exists.");
-       }
-       else{
-           users.child(username).set({
-             firstname: firstname,
-             lastname: lastname,
-             email: email,
-             username: username,
-             password: password,
-             day: day,
-             month: month,
-             year: year,
-             gender: gender,
-             insurance: insurance,
-             zipcode: zipcode
-           }).then(function(snapshot) {
-               // origin.clearUserNamePassword();
-               reset([NavigationActions.navigate({ routeName: 'MainScreen', params: {user: firstname} })], 0);
-               // replace("MainScreen", {user: username}); // some success method
-           }, function(error) {
-             alert('Error submitting form: ' + error);
-           });
-       }
-     });
+      var users = db.ref('/nopioid-mobile-app').child("experiences");
+      users.push({
+        user: origin.user,
+        type: this.stages[0],
+        name: name,
+        zipcode: zipcode,
+        coveredByInsurance: coveredByInsurance,
+        drugScreening: drugScreening,
+        housingService: housingService,
+        transportationAssistance: transportationAssistance,
+        methadoneTreatment: methadoneTreatment,
+        buprenorphineTreatment: buprenorphineTreatment,
+        rating: rating
+      }).then(function(snapshot) {
+
+          if (this.stages.length > 1){
+            this.stages.shift();
+            replace("PastExperienceScreen", {user: origin.user, stages: this.stages});
+          }
+          else{
+            alert("Recommendation screen coming soon!")
+          }
+      }, function(error) {
+        alert('Error submitting form: ' + error);
+      });
     }
     else{
-      alert("Kindly enter a valid information.");
+      alert("Kindly enter valid information.");
     }
   }
 }
 
 const styles = StyleSheet.create({
-
+  itemTitle:{
+    marginTop: 10,
+    padding: 10,
+    paddingBottom: 2,
+    fontSize: 20
+  },
   scrollView:{
     marginTop: 40,
     width: "100%",

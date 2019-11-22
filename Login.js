@@ -99,7 +99,7 @@ export default class Login extends Component {
       usernameTextInput = this.usernameTextInput;
       passwordTextInput = this.passwordTextInput;
       origin = this;
-      const { navigate } = this.props.navigation;
+      const { replace } = this.props.navigation;
       var username = this.state.email.toLowerCase();
       var password = this.state.password;
       if(username != "" && password != ""){
@@ -109,7 +109,7 @@ export default class Login extends Component {
            var json = JSON.parse(JSON.stringify(snapshot.val()));
            if(password == json[username].password){
              origin.clearUserNamePassword();
-             navigate("MainScreen", {user: username});
+             replace("MainRecommenderScreen", {user: username});
            }else{
              alert("Invalid username or password.");
            }
