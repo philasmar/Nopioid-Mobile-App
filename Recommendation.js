@@ -131,7 +131,7 @@ class Recommendation extends Component {
         if (!(existingPlaces.includes(json[x].name)))
         {
           existingPlaces.push(json[x].name);
-          if(zipCodes.includes(json[x].zipcode) && origin.type == json[x].type && insurance == json[x].insurance){
+          if(zipCodes.includes(json[x].zipcode) && origin.type == json[x].type && insurance == json[x].insurance && origin.user != json[x].user){
             itemList.push(
               <View key={x} style={styles.card}>
                 <Text style={styles.cardTitle}>{json[x].name}</Text>
