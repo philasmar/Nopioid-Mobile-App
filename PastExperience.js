@@ -81,7 +81,7 @@ class PastExperience extends Component {
           <View style={styles.actionBar}>
             {
               this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf0c9;</Text>
+                <Text style={styles.actionButtons}>&#xf7a4;</Text>
               ) : null
             }
             <Text style={styles.mainTitle}>Nopioid</Text>
@@ -156,6 +156,8 @@ class PastExperience extends Component {
             </View>
           </View>
           <Text onPress={this.nextClick} style={styles.loginButton}>Save</Text>
+          <Text> </Text>
+          <Text> </Text>
           </ScrollView>
         </View>
       </ImageBackground>
@@ -245,8 +247,10 @@ const styles = StyleSheet.create({
     color: "#fff"
   },
   scrollView:{
-    marginTop: 40,
+    marginTop: 30,
     width: "100%",
+    padding: 20,
+    paddingTop: 0
   },
   scrollViewContainer:{
     alignItems: "center"
@@ -305,14 +309,14 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     color: "#fff",
     marginTop: 10,
+    flex: 1
   },
   mainContainer:{
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: 30,
     paddingTop: 43,
-    paddingBottom: 30,
+    paddingBottom: 10,
     alignItems: "center",
   },
   errorContainer:{
