@@ -4,6 +4,11 @@ import { Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react
 import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
 import { parseIconFromClassName } from 'react-native-fontawesome';
 import * as Font from 'expo-font';
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize
+} from "react-native-responsive-dimensions";
 
 export default class FontAwesomeIcon extends Component {
   state = {
@@ -19,7 +24,8 @@ export default class FontAwesomeIcon extends Component {
   render() {
     return (
         this.state.fontLoaded ? (
-          <Text onPress={this.props.onPress} style={[styles.icon, this.props.style]}>{this.props.icon}</Text>
+          <Text adjustsFontSizeToFitWidth
+              numberOfLines={1} onPress={this.props.onPress} style={[styles.icon, this.props.style]}>{this.props.icon}</Text>
 
         ) : null
     );
@@ -29,10 +35,12 @@ const styles = StyleSheet.create({
 
   icon:{
     fontFamily: "Font Awesome",
-    fontSize: 35,
     textAlign: 'center',
     textAlignVertical: "center",
     padding: 5,
-    width: 60
+    textAlign: "center",
+    textAlignVertical: "center",
+    fontSize: responsiveFontSize(10),
+    color: "#fff"
   },
 });

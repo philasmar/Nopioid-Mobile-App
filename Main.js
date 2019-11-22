@@ -51,7 +51,7 @@ class Main extends Component {
           <View style={styles.actionBar}>
             {
               this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf0c9;</Text>
+                <Text style={styles.actionButtons}>&#xf7a4;</Text>
               ) : null
             }
             <Text style={styles.mainTitle}>Nopioid</Text>
@@ -61,56 +61,57 @@ class Main extends Component {
               ) : null
             }
           </View>
-          {
-            this.user != "" ? (
-              <Text style={styles.welcomeTitle}>Hey, {this.user}!</Text>
-            ): <Text style={styles.welcomeTitle}></Text>
-          }
           <View style={styles.card}>
             <Text style={styles.cardTitle}>What are you looking for?</Text>
             <View style={styles.cardContent}>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf0f8;"
-                text="Emergency Room"
-                onPress={()=>this.emergencyRoomButtonClick()}/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf2cc;"
-                text="Detox"
-                onPress={()=>this.detoxButtonClick()}/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf594;"
-                text="Inpatient Rehab"
-                onPress={()=>this.inRehabButtonClick()}/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf0fe;"
-                text="Outpatient Rehab"
-                onPress={()=>this.outRehabButtonClick()}/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf015;"
-                text="Sober House"
-                onPress={()=>this.soberHouseButtonClick()}/>
-              <IconButton
-                style={styles.cardContentButton}
-                iconStyle=""
-                textStyle=""
-                icon="&#xf4c4;"
-                text="Support Group"
-                onPress={()=>this.supportGroupButtonClick()}/>
+                <View style={styles.cardRow}>
+                  <IconButton
+                    style={styles.cardContentButton}
+                    iconStyle=""
+                    textStyle=""
+                    icon="&#xf2cc;"
+                    text="Detox"
+                    onPress={()=>this.detoxButtonClick()}/>
+                  <IconButton
+                    style={styles.cardContentButton}
+                    iconStyle=""
+                    textStyle=""
+                    icon="&#xf015;"
+                    text="Sober House"
+                    onPress={()=>this.soberHouseButtonClick()}/>
+                </View>
+                <View style={styles.cardRow}>
+                  <IconButton
+                    style={styles.cardContentButton}
+                    iconStyle=""
+                    textStyle=""
+                    icon="&#xf7f2;"
+                    text="Inpatient Rehab"
+                    onPress={()=>this.inRehabButtonClick()}/>
+                  <IconButton
+                    style={styles.cardContentButton}
+                    iconStyle=""
+                    textStyle=""
+                    icon="&#xf0f1;"
+                    text="Outpatient Rehab"
+                    onPress={()=>this.outRehabButtonClick()}/>
+                </View>
+                <View style={styles.cardRow}>
+                  <IconButton
+                    style={styles.cardContentButton}
+                    iconStyle={styles.cardContentIcon}
+                    textStyle=""
+                    icon="&#xf002;"
+                    text="Withdrawl Guide"
+                    onPress={()=>this.emergencyRoomButtonClick()}/>
+                  <IconButton
+                    style={styles.cardContentButton}
+                    iconStyle={styles.cardContentIcon}
+                    textStyle=""
+                    icon="&#xf4c4;"
+                    text="Support Group"
+                    onPress={()=>this.supportGroupButtonClick()}/>
+                </View>
             </View>
           </View>
         </View>
@@ -257,7 +258,11 @@ class Main extends Component {
 }
 
 const styles = StyleSheet.create({
-
+  cardRow:{
+    flexDirection: "row",
+    justifyContent: "center",
+    flex: 1
+  },
   welcomeTitle:{
     textAlignVertical: "center",
     fontSize: 30,
@@ -282,7 +287,8 @@ const styles = StyleSheet.create({
   actionBar: {
     height: 50,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginBottom: 30
   },
   mainTitle: {
     fontSize: 32,
@@ -311,26 +317,33 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     padding: 15,
     paddingTop: 5,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    borderWidth: 0.5,
-    borderColor: '#d1d1d1',
+    // backgroundColor: "#fff",
+    // borderRadius: 20,
+    // borderWidth: 0.5,
+    // borderColor: '#d1d1d1',
+    flex: 1
   },
   cardTitle:{
     textAlign: 'center',
     textAlignVertical: "center",
     fontSize: 25,
     padding: 10,
+    color: "#fff",
+    fontWeight: "500"
   },
   cardContent:{
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center"
+    justifyContent: "center",
+    flex: 1
   },
   cardContentButton:{
+    flex: 1,
     margin: 5,
     // backgroundColor: "#00ff00",
-    width: 100
+    width: 100,
+    fontSize: 40
+  },
+  cardContentIcon:{
+    // fontSize: 40
   }
 });
 

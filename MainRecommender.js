@@ -64,7 +64,7 @@ class MainRecommender extends Component {
           <View style={styles.actionBar}>
             {
               this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf0c9;</Text>
+                <Text style={styles.actionButtons}>&#xf7a4;</Text>
               ) : null
             }
             <Text style={styles.mainTitle}>Nopioid</Text>
@@ -82,31 +82,6 @@ class MainRecommender extends Component {
           <View style={styles.card}>
             <Text style={styles.cardTitle}>What are you looking for?</Text>
             <View style={styles.cardContent}>
-              {
-                this.state.emergencyButtonClicked ?
-                <IconButton
-                  ref={
-                    (comp)=>this.emergencyRoomButton = comp
-                  }
-                  style={styles.cardContentButtonClicked}
-                  iconStyle=""
-                  textStyle=""
-                  icon="&#xf0f8;"
-                  text="Emergency Room"
-                  onPress={(comp)=>this.emergencyRoomButtonClick(comp)}/>
-                :
-
-                <IconButton
-                  ref={
-                    (comp)=>this.emergencyRoomButton = comp
-                  }
-                  style={styles.cardContentButton}
-                  iconStyle=""
-                  textStyle=""
-                  icon="&#xf0f8;"
-                  text="Emergency Room"
-                  onPress={(comp)=>this.emergencyRoomButtonClick(comp)}/>
-              }
               {
                 this.state.detoxButtonClicked ?
                 <IconButton
@@ -133,56 +108,6 @@ class MainRecommender extends Component {
                   onPress={(comp)=>this.detoxButtonClick(comp)}/>
               }
               {
-                this.state.inpatientrehabButtonClicked ?
-                <IconButton
-                  ref={
-                    (comp)=>this.inpatientrehabButton = comp
-                  }
-                  style={styles.cardContentButtonClicked}
-                  iconStyle=""
-                  textStyle=""
-                  icon="&#xf594;"
-                  text="Inpatient Rehab"
-                  onPress={(comp)=>this.inpatientButtonClick(comp)}/>
-                :
-
-                <IconButton
-                  ref={
-                    (comp)=>this.inpatientrehabButton = comp
-                  }
-                  style={styles.cardContentButton}
-                  iconStyle=""
-                  textStyle=""
-                  icon="&#xf594;"
-                  text="Inpatient Rehab"
-                  onPress={(comp)=>this.inpatientButtonClick(comp)}/>
-              }
-              {
-                this.state.outpatientrehabButtonClicked ?
-                <IconButton
-                  ref={
-                    (comp)=>this.outpatientrehabButton = comp
-                  }
-                  style={styles.cardContentButtonClicked}
-                  iconStyle=""
-                  textStyle=""
-                  icon="&#xf0fe;"
-                  text="Outpatient Rehab"
-                  onPress={(comp)=>this.outpatientButtonClick(comp)}/>
-                :
-
-                <IconButton
-                  ref={
-                    (comp)=>this.outpatientrehabButton = comp
-                  }
-                  style={styles.cardContentButton}
-                  iconStyle=""
-                  textStyle=""
-                  icon="&#xf0fe;"
-                  text="Outpatient Rehab"
-                  onPress={(comp)=>this.outpatientButtonClick(comp)}/>
-              }
-              {
                 this.state.soberhouseButtonClicked ?
                 <IconButton
                   ref={
@@ -206,6 +131,81 @@ class MainRecommender extends Component {
                   icon="&#xf015;"
                   text="Sober House"
                   onPress={(comp)=>this.soberhouseButtonClick(comp)}/>
+              }
+              {
+                this.state.inpatientrehabButtonClicked ?
+                <IconButton
+                  ref={
+                    (comp)=>this.inpatientrehabButton = comp
+                  }
+                  style={styles.cardContentButtonClicked}
+                  iconStyle=""
+                  textStyle=""
+                  icon="&#xf7f2;"
+                  text="Inpatient Rehab"
+                  onPress={(comp)=>this.inpatientButtonClick(comp)}/>
+                :
+
+                <IconButton
+                  ref={
+                    (comp)=>this.inpatientrehabButton = comp
+                  }
+                  style={styles.cardContentButton}
+                  iconStyle=""
+                  textStyle=""
+                  icon="&#xf7f2;"
+                  text="Inpatient Rehab"
+                  onPress={(comp)=>this.inpatientButtonClick(comp)}/>
+              }
+              {
+                this.state.outpatientrehabButtonClicked ?
+                <IconButton
+                  ref={
+                    (comp)=>this.outpatientrehabButton = comp
+                  }
+                  style={styles.cardContentButtonClicked}
+                  iconStyle=""
+                  textStyle=""
+                  icon="&#xf0f1;"
+                  text="Outpatient Rehab"
+                  onPress={(comp)=>this.outpatientButtonClick(comp)}/>
+                :
+
+                <IconButton
+                  ref={
+                    (comp)=>this.outpatientrehabButton = comp
+                  }
+                  style={styles.cardContentButton}
+                  iconStyle=""
+                  textStyle=""
+                  icon="&#xf0f1;"
+                  text="Outpatient Rehab"
+                  onPress={(comp)=>this.outpatientButtonClick(comp)}/>
+              }
+              {
+                this.state.emergencyButtonClicked ?
+                <IconButton
+                  ref={
+                    (comp)=>this.emergencyRoomButton = comp
+                  }
+                  style={styles.cardContentButtonClicked}
+                  iconStyle=""
+                  textStyle=""
+                  icon="&#xf002;"
+                  text="Withdrawl Guide"
+                  onPress={(comp)=>this.emergencyRoomButtonClick(comp)}/>
+                :
+
+                <IconButton
+                  ref={
+                    (comp)=>this.emergencyRoomButton = comp
+                  }
+                  style={styles.cardContentButton}
+                  iconStyle=""
+                  textStyle=""
+                  icon="&#xf002;"
+                  text="Withdrawl Guide"
+                  onPress={(comp)=>this.emergencyRoomButtonClick(comp)}/>
               }
               {
                 this.state.supportgroupButtonClicked ?

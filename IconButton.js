@@ -5,6 +5,11 @@ import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-
 import { parseIconFromClassName } from 'react-native-fontawesome';
 import * as Font from 'expo-font';
 import  FontAwesomeIcon  from './FontAwesomeIcon';
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize
+} from "react-native-responsive-dimensions";
 
 export default class IconButton extends Component {
   state = {
@@ -34,6 +39,9 @@ const styles = StyleSheet.create({
   },
   text:{
     textAlign: "center",
-    textAlignVertical: "center"
-  }
+    textAlignVertical: "center",
+    fontSize: 20,
+    color: "#fff"
+  },
+
 });
