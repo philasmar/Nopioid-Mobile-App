@@ -21,6 +21,7 @@ class PastExperience extends Component {
     super(props);
     this.stages = [];
     this.user = "";
+    this.type = "";
     this.nextClick = this.nextClick.bind(this);
     this.state = {
       name :"",
@@ -46,6 +47,11 @@ class PastExperience extends Component {
     this.setState({ fontLoaded: true });
   }
   render() {
+    try {
+        this.type = this.props.navigation.state.params.type;
+    }
+    catch(error) {
+    }
     try {
         this.user = this.props.navigation.state.params.user;
         origin = this;
@@ -195,10 +201,10 @@ class PastExperience extends Component {
 
           if (this.stages.length > 1){
             this.stages.shift();
-            replace("PastExperienceScreen", {user: origin.user, stages: this.stages});
+            replace("PastExperienceScreen", {user: origin.user, stages: this.stages, type: origin.type});
           }
           else{
-            alert("Recommendation screen coming soon!")
+            replace("RecommendationScreen", {user: origin.user, stages: this.stages, type: origin.type});
           }
       }, function(error) {
         alert('Error submitting form: ' + error);

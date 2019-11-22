@@ -18,6 +18,7 @@ class MainRecommender extends Component {
   constructor(props) {
     super(props);
     this.user = "";
+    this.type = "";
     this.emergencyRoomButtonClick = this.emergencyRoomButtonClick.bind(this);
     this.detoxButtonClick = this.detoxButtonClick.bind(this);
     this.inpatientButtonClick = this.inpatientButtonClick.bind(this);
@@ -47,6 +48,11 @@ class MainRecommender extends Component {
   render() {
     try {
         this.user = this.props.navigation.state.params.user;
+    }
+    catch(error) {
+    }
+    try {
+        this.type = this.props.navigation.state.params.type;
     }
     catch(error) {
     }
@@ -297,6 +303,7 @@ class MainRecommender extends Component {
   loginButtonClick(){
     origin = this;
     const { push } = this.props.navigation;
+    const { replace } = this.props.navigation;
     stages = [];
     if(this.state.emergencyButtonClicked){
       stages.push("Emergency Room");
@@ -317,10 +324,10 @@ class MainRecommender extends Component {
       stages.push("Support Group");
     }
     if(stages.length > 0){
-      push("PastExperienceScreen", {user: this.user, stages: stages});
+      push("PastExperienceScreen", {user: this.user, stages: stages, type: this.type});
     }
     else{
-      alert("Recommendation screen coming soon!")
+      replace("RecommendationScreen", {user: this.user, stages: stages, type: this.type});
     }
   }
 

@@ -80,6 +80,7 @@ export default class CreateAccount extends Component {
         insurance : "",
         zipcode : ""
       };
+      this.type = "";
     }
   state = {
     fontLoaded: false,
@@ -92,6 +93,11 @@ export default class CreateAccount extends Component {
     this.setState({ fontLoaded: true });
   }
   render() {
+    try {
+        this.type = this.props.navigation.state.params.type;
+    }
+    catch(error) {
+    }
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
@@ -132,7 +138,7 @@ export default class CreateAccount extends Component {
       usernameTextInput = this.usernameTextInput;
       passwordTextInput = this.passwordTextInput;
       origin = this;
-      const { navigate } = this.props.navigation;
+      const { replace } = this.props.navigation;
       var username = this.state.email.toLowerCase();
       var password = this.state.password;
       if(username != "" && password != ""){
@@ -142,7 +148,7 @@ export default class CreateAccount extends Component {
            var json = JSON.parse(JSON.stringify(snapshot.val()));
            if(password == json[username].password){
              origin.clearUserNamePassword();
-             navigate("MainScreen", {user: username});
+             replace("MainRecommenderScreen", {user: username, type: origin.type});
            }else{
              alert("Invalid username or password.");
            }
@@ -243,7 +249,7 @@ export default class CreateAccount extends Component {
              zipcode: zipcode
            }).then(function(snapshot) {
                // origin.clearUserNamePassword();
-               reset([NavigationActions.navigate({ routeName: 'MainScreen', params: {user: firstname} })], 0);
+               reset([NavigationActions.navigate({ routeName: 'MainRecommenderScreen', params: {user: username, type: origin.type} })], 0);
                // replace("MainScreen", {user: username}); // some success method
            }, function(error) {
              alert('Error submitting form: ' + error);

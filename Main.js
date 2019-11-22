@@ -118,11 +118,11 @@ class Main extends Component {
     );
   }
 
-  requireLogin(){
+  requireLogin(type){
     this.block = true;
     const { navigate } = this.props.navigation;
     if(this.user == ""){
-      navigate("LoginScreen");
+      navigate("LoginScreen", {type: type});
       return true;
     }else{
       return false;
@@ -135,7 +135,7 @@ class Main extends Component {
 
   emergencyRoomButtonClick(){
     origin = this;
-    result = this.requireLogin();
+    result = this.requireLogin("Emergency Room");
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
@@ -156,7 +156,7 @@ class Main extends Component {
   detoxButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin();
+    result = this.requireLogin("Detox");
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
@@ -176,7 +176,7 @@ class Main extends Component {
   inRehabButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin();
+    result = this.requireLogin("Inpatient Rehab");
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
@@ -196,7 +196,7 @@ class Main extends Component {
   outRehabButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin();
+    result = this.requireLogin("Outpatient Rehab");
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
@@ -216,7 +216,7 @@ class Main extends Component {
   soberHouseButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin();
+    result = this.requireLogin("Sober House");
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
@@ -236,7 +236,7 @@ class Main extends Component {
   supportGroupButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin();
+    result = this.requireLogin("Support Group");
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',

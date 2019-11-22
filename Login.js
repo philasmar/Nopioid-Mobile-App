@@ -68,6 +68,7 @@ export default class Login extends Component {
       this.clearUserNamePassword = this.clearUserNamePassword.bind(this);
       this.loginButtonClick = this.loginButtonClick.bind(this);
       this.state = {isLoggedIn : false, email :"", password : ""};
+      this.type = "";
     }
   state = {
     fontLoaded: false,
@@ -80,6 +81,11 @@ export default class Login extends Component {
     this.setState({ fontLoaded: true });
   }
   render() {
+    try {
+        this.type = this.props.navigation.state.params.type;
+    }
+    catch(error) {
+    }
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
@@ -109,7 +115,7 @@ export default class Login extends Component {
            var json = JSON.parse(JSON.stringify(snapshot.val()));
            if(password == json[username].password){
              origin.clearUserNamePassword();
-             replace("MainRecommenderScreen", {user: username});
+             replace("MainRecommenderScreen", {user: username, type: origin.type});
            }else{
              alert("Invalid username or password.");
            }
@@ -133,7 +139,7 @@ export default class Login extends Component {
 
   createAccountButtonClick(){
   const { navigate } = this.props.navigation;
-  navigate("CreateAccountScreen");
+  navigate("CreateAccountScreen", {type: this.type});
     // usernameTextInput = this.usernameTextInput;
     // passwordTextInput = this.passwordTextInput;
     // origin = this;
