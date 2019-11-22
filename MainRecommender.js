@@ -388,7 +388,10 @@ const styles = StyleSheet.create({
   },
   cardContentButtonClicked:{
     margin: 5,
-    backgroundColor: "#00ff00",
+    backgroundColor: "#d6d6d0",
+    borderWidth: 1,
+    borderColor: "#d6d6d0",
+    borderRadius: 10,
     width: 100
   }
 });
