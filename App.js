@@ -6,6 +6,7 @@ import Login from "./Login";
 import History from "./History";
 import CreateAccount from "./CreateAccount";
 import PastExperience from "./PastExperience";
+import MainRecommender from "./MainRecommender";
 
 const AppNavigator = createStackNavigator({
     LoginScreen: {
@@ -23,8 +24,11 @@ const AppNavigator = createStackNavigator({
     PastExperienceScreen: {
       screen: PastExperience
     },
+    MainRecommenderScreen: {
+      screen: MainRecommender
+    },
   }, {
-  initialRouteName: 'PastExperienceScreen',
+  initialRouteName: 'MainRecommenderScreen',
   headerMode: 'none'
 });
 
