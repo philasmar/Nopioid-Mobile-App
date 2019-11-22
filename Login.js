@@ -91,11 +91,11 @@ export default class Login extends Component {
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
         <View style={styles.mainContainer}>
-          <Text style={styles.mainTitle}>Nopioid</Text>
+          <Text style={styles.mainTitle}>Personalize Your Experience</Text>
           <TextInput ref={input => { this.usernameTextInput = input }} placeholder="Username" style={styles.loginTextBox} onChangeText = {(text) => this.setState({email : text})}/>
           <TextInput ref={input => { this.passwordTextInput = input }} secureTextEntry={true} placeholder="Password" style={styles.loginTextBox} onChangeText = {(text) => this.setState({password : text})}/>
           <Text onPress={this.loginButtonClick} style={styles.loginButton}>Login</Text>
-          <Text onPress={this.createAccountButtonClick} style={styles.loginButton}>Create Account</Text>
+          <Text onPress={this.createAccountButtonClick} style={styles.loginButtonBasic}>Create Account</Text>
         </View>
       </ImageBackground>
     );
@@ -170,16 +170,27 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   loginButton:{
-    maxWidth: 500,
-    backgroundColor: "#ad2ea1",
+    maxWidth: 180,
+    backgroundColor: "#000",
     marginTop: 10,
-    fontSize: 20,
-    borderRadius: 5,
+    fontSize: 23,
+    borderRadius: 15,
     borderWidth: 0.5,
     borderColor: '#cb2877',
-    padding: 10,
+    padding: 15,
     textAlign: "center",
     color: "#ddd",
+    overflow:"hidden",
+    alignSelf: "center",
+    width: "100%"
+  },
+  loginButtonBasic:{
+    maxWidth: 180,
+    marginTop: 13,
+    fontSize: 23,
+    textDecorationLine: "underline",
+    textAlign: "center",
+    color: "#fff",
     overflow:"hidden",
     alignSelf: "center",
     width: "100%"
@@ -187,12 +198,13 @@ const styles = StyleSheet.create({
   loginTextBox:{
     maxWidth: 500,
     marginTop: 10,
+    marginBottom: 10,
     backgroundColor: "#fff",
-    fontSize: 20,
-    borderRadius: 5,
+    fontSize: 25,
+    borderRadius: 15,
     borderWidth: 0.5,
     borderColor: '#d1d1d1',
-    padding: 10,
+    padding: 15,
     alignSelf: "center",
     width: "100%"
   },
@@ -200,7 +212,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: 20,
+    padding: 30,
     paddingTop: 43,
     paddingBottom: 30,
     justifyContent: "center",
