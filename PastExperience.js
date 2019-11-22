@@ -17,7 +17,7 @@ const validIcon = parseIconFromClassName('fas fa-plus')
 class PastExperience extends Component {
   constructor(props) {
     super(props);
-    this.stage = "Detox";
+    this.stages = [];
     this.user = "";
     this.nextClick = this.nextClick.bind(this);
     this.state = {
@@ -49,7 +49,7 @@ class PastExperience extends Component {
     catch(error) {
     }
     try {
-        this.stage = this.props.navigation.state.params.stage;
+        this.stages = this.props.navigation.state.params.stages;
     }
     catch(error) {
     }

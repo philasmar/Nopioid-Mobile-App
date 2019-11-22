@@ -24,6 +24,7 @@ class MainRecommender extends Component {
     this.outpatientButtonClick = this.outpatientButtonClick.bind(this);
     this.soberhouseButtonClick = this.soberhouseButtonClick.bind(this);
     this.supportgroupButtonClick = this.supportgroupButtonClick.bind(this);
+    this.loginButtonClick = this.loginButtonClick.bind(this);
 
     this.state = {
       emergencyButtonClicked : false,
@@ -227,6 +228,7 @@ class MainRecommender extends Component {
               }
             </View>
           </View>
+          <Text onPress={this.loginButtonClick} style={styles.loginButton}>Next</Text>
         </View>
       </ImageBackground>
     );
@@ -262,10 +264,55 @@ class MainRecommender extends Component {
     // this.emergencyRoomButton.props.style = styles.cardContentButtonClicked;
   }
 
+  loginButtonClick(){
+    origin = this;
+    const { push } = this.props.navigation;
+    stages = [];
+    if(this.state.emergencyButtonClicked){
+      stages.push("Emergency Room");
+    }
+    if(this.state.detoxButtonClicked){
+      stages.push("Detox");
+    }
+    if(this.state.inpatientrehabButtonClicked){
+      stages.push("Inpatient Rehab");
+    }
+    if(this.state.outpatientrehabButtonClicked){
+      stages.push("Outpatient Rehab");
+    }
+    if(this.state.soberhouseButtonClicked){
+      stages.push("Sober House");
+    }
+    if(this.state.supportgroupButtonClicked){
+      stages.push("Support Group");
+    }
+    if(stages.length > 0){
+      push("PastExperienceScreen", {stages: stages});
+    }
+    else{
+      alert("Recommendation screen coming soon!")
+    }
+  }
+
 }
 
 const styles = StyleSheet.create({
 
+    loginButton:{
+      maxWidth: 500,
+      backgroundColor: "#ad2ea1",
+      marginTop: 10,
+      fontSize: 20,
+      borderRadius: 5,
+      borderWidth: 0.5,
+      borderColor: '#cb2877',
+      padding: 10,
+      textAlign: "center",
+      color: "#ddd",
+      overflow:"hidden",
+      alignSelf: "center",
+      width: "100%"
+    },
   welcomeTitle:{
     textAlignVertical: "center",
     fontSize: 30,
