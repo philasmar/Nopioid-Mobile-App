@@ -13,9 +13,10 @@
       "android",
       "web"
     ],
-
     "android": {
       "package": "me.nopioid.nopioid"
-    }
+    },
+    "icon": "./images/app-icon.png",
+    "description": ""
   }
 }

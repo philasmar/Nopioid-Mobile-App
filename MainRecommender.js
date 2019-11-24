@@ -1,24 +1,12 @@
 import React, { Component } from 'react';
 import { Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
-
-import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
-import { parseIconFromClassName } from 'react-native-fontawesome';
-import * as Font from 'expo-font';
 import  IconButton  from './IconButton';
 import { withNavigationFocus } from 'react-navigation';
-
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
-const validIcon = parseIconFromClassName('fas fa-plus')
+import AppActionBar from './AppActionBar'
 
 class MainRecommender extends Component {
   constructor(props) {
     super(props);
-    this.user = "";
-    this.type = "";
     this.emergencyRoomButtonClick = this.emergencyRoomButtonClick.bind(this);
     this.detoxButtonClick = this.detoxButtonClick.bind(this);
     this.inpatientButtonClick = this.inpatientButtonClick.bind(this);
@@ -28,6 +16,8 @@ class MainRecommender extends Component {
     this.loginButtonClick = this.loginButtonClick.bind(this);
 
     this.state = {
+      user: "",
+      type: "",
       emergencyButtonClicked : false,
       detoxButtonClicked: false,
       inpatientrehabButtonClicked: false,
@@ -35,45 +25,31 @@ class MainRecommender extends Component {
       soberhouseButtonClicked: false,
       supportgroupButtonClicked: false};
   }
-  state = {
-    fontLoaded: false,
-  };
-  async componentDidMount() {
-    await Font.loadAsync({
-      'Font Awesome': require('./assets/fonts/fontawesome.ttf'),
-    });
 
-    this.setState({ fontLoaded: true });
+  componentDidMount(prevProps) {
+    if ("params" in this.props.navigation.state){
+      if ("user" in this.props.navigation.state.params){
+        user = this.props.navigation.state.params.user;
+        if (user != this.state.user){
+          this.setState({user: user});
+        }
+      }
+      if ("type" in this.props.navigation.state.params){
+        type = this.props.navigation.state.params.type;
+        if (type != this.state.type){
+          this.setState({type: type});
+        }
+      }
+    }
   }
+
   render() {
-    try {
-        this.user = this.props.navigation.state.params.user;
-    }
-    catch(error) {
-    }
-    try {
-        this.type = this.props.navigation.state.params.type;
-    }
-    catch(error) {
-    }
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
+        <AppActionBar state={this.state}/>
         <View style={styles.mainContainer}>
-          <View style={styles.actionBar}>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf7a4;</Text>
-              ) : null
-            }
-            <Text style={styles.mainTitle}>Nopioid</Text>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf007;</Text>
-              ) : null
-            }
-          </View>
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Please help us understand where you're coming from</Text>
             <Text style={styles.cardSubTitle}>Select the facilities you've been to</Text>
@@ -326,10 +302,10 @@ class MainRecommender extends Component {
       stages.push("Support Group");
     }
     if(stages.length > 0){
-      push("PastExperienceScreen", {user: this.user, stages: stages, type: this.type});
+      push("PastExperienceScreen", {user: this.state.user, stages: stages, type: this.state.type});
     }
     else{
-      replace("RecommendationScreen", {user: this.user, stages: stages, type: this.type});
+      replace("RecommendationScreen", {user: this.state.user, stages: stages, type: this.state.type});
     }
   }
 

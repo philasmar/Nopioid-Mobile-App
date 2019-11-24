@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { ScrollView, Picker, TextInput, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
-import { parseIconFromClassName } from 'react-native-fontawesome';
-import * as Font from 'expo-font';
-import  IconButton  from './IconButton';
 import  TextBox  from './TextBox';
 import firebase from './FirebaseDatabase';
 import {InteractionManager} from 'react-native';
+import AppActionBar from './AppActionBar'
 
 const _setTimeout = global.setTimeout;
 const _clearTimeout = global.clearTimeout;
@@ -54,13 +51,6 @@ if (Platform.OS === 'android') {
     };
 }
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
-const validIcon = parseIconFromClassName('fas fa-plus');
-const vari = "";
-
 export default class CreateAccount extends Component {
   constructor(props) {
         super(props);
@@ -78,30 +68,27 @@ export default class CreateAccount extends Component {
         year : "",
         gender : "",
         insurance : "",
-        zipcode : ""
+        zipcode : "",
+        type: ""
       };
-      this.type = "";
-    }
-  state = {
-    fontLoaded: false,
-  };
-  async componentDidMount() {
-    await Font.loadAsync({
-      'Font Awesome': require('./assets/fonts/fontawesome.ttf'),
-    });
+  }
 
-    this.setState({ fontLoaded: true });
+  componentDidMount(prevProps) {
+    if ("params" in this.props.navigation.state){
+      if ("type" in this.props.navigation.state.params){
+        type = this.props.navigation.state.params.type;
+        if (type != this.state.type){
+          this.setState({type: type});
+        }
+      }
+    }
   }
   render() {
-    try {
-        this.type = this.props.navigation.state.params.type;
-    }
-    catch(error) {
-    }
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
+        <AppActionBar state={this.state}/>
         <View style={styles.mainContainer}>
           <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
             <Text style={styles.mainTitle}>Create an Account</Text>
@@ -111,8 +98,8 @@ export default class CreateAccount extends Component {
             <TextInput ref={input => { this.usernameTextInput = input }} placeholder="Username" style={styles.loginTextBox} onChangeText = {(text) => this.setState({username : text})}/>
             <TextInput ref={input => { this.passwordTextInput = input }} secureTextEntry={true} placeholder="Password" style={styles.loginTextBox} onChangeText = {(text) => this.setState({password : text})}/>
             <View style={styles.dateOfBirth}>
-              <TextInput keyboardType = 'numeric' ref={input => { this.dateofbirthDayTextInput = input }} placeholder="Day" style={styles.dateOfBirthloginTextBox} onChangeText = {(text) => this.setState({day : text})}/>
-              <TextInput keyboardType = 'numeric' ref={input => { this.dateofbirthMonthTextInput = input }} placeholder="Month" style={[styles.dateOfBirthloginTextBox, {marginLeft: 5, marginRight: 5}]} onChangeText = {(text) => this.setState({month : text})}/>
+              <TextInput keyboardType = 'numeric' ref={input => { this.dateofbirthMonthTextInput = input }} placeholder="Month" style={styles.dateOfBirthloginTextBox} onChangeText = {(text) => this.setState({month : text})}/>
+              <TextInput keyboardType = 'numeric' ref={input => { this.dateofbirthDayTextInput = input }} placeholder="Day" style={[styles.dateOfBirthloginTextBox, {marginLeft: 5, marginRight: 5}]} onChangeText = {(text) => this.setState({day : text})}/>
               <TextInput keyboardType = 'numeric' ref={input => { this.dateofbirthYearTextInput = input }} placeholder="Year" style={styles.dateOfBirthloginTextBox} onChangeText = {(text) => this.setState({year : text})}/>
             </View>
             <View style={styles.genderDropdownContainer}>
@@ -148,7 +135,7 @@ export default class CreateAccount extends Component {
            var json = JSON.parse(JSON.stringify(snapshot.val()));
            if(password == json[username].password){
              origin.clearUserNamePassword();
-             replace("MainRecommenderScreen", {user: username, type: origin.type});
+             replace("MainRecommenderScreen", {user: username, type: origin.state.type});
            }else{
              alert("Invalid username or password.");
            }
@@ -248,9 +235,11 @@ export default class CreateAccount extends Component {
              insurance: insurance,
              zipcode: zipcode
            }).then(function(snapshot) {
-               // origin.clearUserNamePassword();
-               reset([NavigationActions.navigate({ routeName: 'MainRecommenderScreen', params: {user: username, type: origin.type} })], 0);
-               // replace("MainScreen", {user: username}); // some success method
+               if(origin.state.type){
+                 reset([NavigationActions.navigate({ routeName: 'MainRecommenderScreen', params: {user: username, type: origin.state.type} })], 0);
+               }else{
+                 reset([NavigationActions.navigate({ routeName: 'MainScreen', params: {user: username} })], 0);
+               }
            }, function(error) {
              alert('Error submitting form: ' + error);
            });
@@ -284,8 +273,7 @@ const styles = StyleSheet.create({
     borderColor: '#d1d1d1',
   },
   scrollView:{
-    marginTop: 40,
-    width: "100%"
+    width: "100%",
   },
   scrollViewContainer:{
   },
@@ -307,7 +295,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   loginButton:{
-    maxWidth: 180,
+    maxWidth: 220,
     backgroundColor: "#000",
     marginTop: 10,
     fontSize: 23,
@@ -315,6 +303,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#cb2877',
     padding: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
     textAlign: "center",
     color: "#ddd",
     overflow:"hidden",
@@ -339,10 +329,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     padding: 30,
-    paddingTop: 43,
-    paddingBottom: 30,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   imageBackground:{
     flex: 1,

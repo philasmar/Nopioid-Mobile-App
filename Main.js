@@ -1,22 +1,12 @@
 import React, { Component } from 'react';
 import { Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
-
-import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
-import { parseIconFromClassName } from 'react-native-fontawesome';
-import * as Font from 'expo-font';
 import  IconButton  from './IconButton';
-import { withNavigationFocus } from 'react-navigation';
+import { NavigationActions, withNavigationFocus } from 'react-navigation';
+import AppActionBar from './AppActionBar'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
-const validIcon = parseIconFromClassName('fas fa-plus')
-
-class Main extends Component {
+export default class Main extends Component {
   constructor(props) {
     super(props);
-    this.user = "";
     this.emergencyRoomButtonClick = this.emergencyRoomButtonClick.bind(this);
     this.requireLogin = this.requireLogin.bind(this);
     this.detoxButtonClick = this.detoxButtonClick.bind(this);
@@ -24,43 +14,26 @@ class Main extends Component {
     this.outRehabButtonClick = this.outRehabButtonClick.bind(this);
     this.soberHouseButtonClick = this.soberHouseButtonClick.bind(this);
     this.supportGroupButtonClick = this.supportGroupButtonClick.bind(this);
-    this.emergencyRoomAction = this.emergencyRoomAction.bind(this);
-    this.block = false;
+    this.mainRecommenderScreen = this.mainRecommenderScreen.bind(this);
+    this.state = { user: ""};
   }
-  state = {
-    fontLoaded: false,
-  };
-  async componentDidMount() {
-    await Font.loadAsync({
-      'Font Awesome': require('./assets/fonts/fontawesome.ttf'),
-    });
-
-    this.setState({ fontLoaded: true });
+  componentDidMount(prevProps) {
+    if ("params" in this.props.navigation.state){
+      if ("user" in this.props.navigation.state.params){
+        user = this.props.navigation.state.params.user;
+        if (user != this.state.user){
+          this.setState({user: user});
+        }
+      }
+    }
   }
   render() {
-    try {
-        this.user = this.props.navigation.state.params.user;
-    }
-    catch(error) {
-    }
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
+        <AppActionBar state={this.state}/>
         <View style={styles.mainContainer}>
-          <View style={styles.actionBar}>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf7a4;</Text>
-              ) : null
-            }
-            <Text style={styles.mainTitle}>Nopioid</Text>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf007;</Text>
-              ) : null
-            }
-          </View>
           <View style={styles.card}>
             <Text style={styles.cardTitle}>What are you looking for?</Text>
             <View style={styles.cardContent}>
@@ -120,138 +93,144 @@ class Main extends Component {
   }
 
   requireLogin(type){
-    this.block = true;
-    const { navigate } = this.props.navigation;
-    if(this.user == ""){
-      navigate("LoginScreen", {type: type});
+    const { push } = this.props.navigation;
+    if(this.state.user == ""){
+      push('LoginScreen', {type: type});
+      // reset([NavigationActions.navigate({ routeName: 'LoginScreen', params:{type: type} })], 0);
       return true;
     }else{
       return false;
     }
   }
 
-  emergencyRoomAction(){
-    alert("Feature Coming Soon!");
+  mainRecommenderScreen(type){
+    const { reset } = this.props.navigation;
+    reset([NavigationActions.navigate({ routeName: 'MainRecommenderScreen', params:{user: this.state.user, type: type} })], 0);
   }
 
   emergencyRoomButtonClick(){
     origin = this;
-    result = this.requireLogin("Emergency Room");
+    type = "Emergency Room"
+    result = this.requireLogin(type);
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
-          if(origin.user == ""){
+          if(origin.state.user == ""){
 
           }else{
-            this.emergencyRoomAction();
+            origin.mainRecommenderScreen(type);
           }
           didBlurSubscription.remove();
         }
       );
     }else{
-      this.emergencyRoomAction();
+      origin.mainRecommenderScreen(type);
     }
   }
 
   detoxButtonClick(){
-    // alert("hi");
     origin = this;
-    result = this.requireLogin("Detox");
+    type = "Detox";
+    result = this.requireLogin(type);
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
-          if(origin.user == ""){
+          if(origin.state.user == ""){
 
           }else{
-            this.detoxAction();
+            origin.mainRecommenderScreen(type);
           }
           didBlurSubscription.remove();
         }
       );
     }else{
-      this.detoxAction();
+      origin.mainRecommenderScreen(type);
     }
   }
   inRehabButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin("Inpatient Rehab");
+    type = "Inpatient Rehab";
+    result = this.requireLogin(type);
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
-          if(origin.user == ""){
+          if(origin.state.user == ""){
 
           }else{
-            this.inRehabAction();
+            origin.mainRecommenderScreen(type);
           }
           didBlurSubscription.remove();
         }
       );
     }else{
-      this.inRehabAction();
+      origin.mainRecommenderScreen(type);
     }
   }
   outRehabButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin("Outpatient Rehab");
+    type = "Outpatient Rehab";
+    result = this.requireLogin(type);
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
-          if(origin.user == ""){
+          if(origin.state.user == ""){
 
           }else{
-            this.outRehabAction();
+            origin.mainRecommenderScreen(type);
           }
           didBlurSubscription.remove();
         }
       );
     }else{
-      this.outRehabAction();
+      origin.mainRecommenderScreen(type);
     }
   }
   soberHouseButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin("Sober House");
+    type = "Sober House";
+    result = this.requireLogin(type);
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
-          if(origin.user == ""){
+          if(origin.state.user == ""){
 
           }else{
-            this.soberHouseAction();
+            origin.mainRecommenderScreen(type);
           }
           didBlurSubscription.remove();
         }
       );
     }else{
-      this.soberHouseAction();
+      origin.mainRecommenderScreen(type);
     }
   }
   supportGroupButtonClick(){
     // alert("hi");
     origin = this;
-    result = this.requireLogin("Support Group");
+    type = "Support Group";
+    result = this.requireLogin(type);
     if(result){
       const didBlurSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
-          if(origin.user == ""){
+          if(origin.state.user == ""){
 
           }else{
-            this.supportGroupAction();
+            origin.mainRecommenderScreen(type);
           }
           didBlurSubscription.remove();
         }
       );
     }else{
-      this.supportGroupAction();
+      origin.mainRecommenderScreen(type);
     }
   }
 
@@ -276,8 +255,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     padding: 10,
-    paddingTop: 43,
     paddingBottom: 30,
+    // backgroundColor: "#00ff00"
   },
   imageBackground:{
     flex: 1,
@@ -346,5 +325,3 @@ const styles = StyleSheet.create({
     // fontSize: 40
   }
 });
-
-export default withNavigationFocus(Main);

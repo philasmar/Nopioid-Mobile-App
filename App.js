@@ -8,6 +8,8 @@ import CreateAccount from "./CreateAccount";
 import PastExperience from "./PastExperience";
 import MainRecommender from "./MainRecommender";
 import Recommendation from "./Recommendation";
+import UserAccount from "./UserAccount";
+import AppActionBar from "./AppActionBar";
 
 const AppNavigator = createStackNavigator({
     LoginScreen: {
@@ -31,9 +33,18 @@ const AppNavigator = createStackNavigator({
     RecommendationScreen: {
       screen: Recommendation
     },
+    UserAccountScreen: {
+      screen: UserAccount
+    },
+    AppActionBarScreen: {
+      screen: AppActionBar
+    },
   }, {
   initialRouteName: 'MainScreen',
-  headerMode: 'none'
+  headerMode: 'none',
+  defaultNavigationOptions: {
+    swipeEnabled: false
+  }
 });
 
 export default createAppContainer(AppNavigator);
