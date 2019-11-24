@@ -1,69 +1,47 @@
 import React, { Component } from 'react';
 import { Image, ScrollView, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
-
-import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
-import { parseIconFromClassName } from 'react-native-fontawesome';
-import * as Font from 'expo-font';
-import  IconButton  from './IconButton';
 import { withNavigationFocus } from 'react-navigation';
 import firebase from './FirebaseDatabase';
+import AppActionBar from './AppActionBar'
 
 export const db = firebase.database();
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
-const validIcon = parseIconFromClassName('fas fa-plus')
 
 class Recommendation extends Component {
   constructor(props) {
     super(props);
-    this.user = "";
-    this.type = "";
     this.getRecommendations = this.getRecommendations.bind(this);
-    // this.getZipCodes = this.getZipCodes.bind(this);
-    this.state = {itemList : []};
+    this.state = {
+      user: "",
+      type: "",
+      itemList : []
+    };
   }
-  state = {
-    fontLoaded: false,
-  };
-  async componentDidMount() {
-    this.getRecommendations();
-    await Font.loadAsync({
-      'Font Awesome': require('./assets/fonts/fontawesome.ttf'),
-    });
 
-    this.setState({ fontLoaded: true });
+  componentDidMount(prevProps) {
+    if ("params" in this.props.navigation.state){
+      if ("user" in this.props.navigation.state.params){
+        user = this.props.navigation.state.params.user;
+        if (user != this.state.user){
+          this.setState({user: user});
+        }
+      }
+      if ("type" in this.props.navigation.state.params){
+        type = this.props.navigation.state.params.type;
+        if (type != this.state.type){
+          this.setState({type: type});
+        }
+      }
+    }
+    this.getRecommendations();
   }
+
   render() {
-    try {
-        this.user = this.props.navigation.state.params.user;
-    }
-    catch(error) {
-    }
-    try {
-        this.type = this.props.navigation.state.params.type;
-    }
-    catch(error) {
-    }
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
+        <AppActionBar state={this.state}/>
         <View style={styles.mainContainer}>
-          <View style={styles.actionBar}>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf7a4;</Text>
-              ) : null
-            }
-            <Text style={styles.mainTitle}>Nopioid</Text>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf007;</Text>
-              ) : null
-            }
-          </View>
           <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
             <Text style={[styles.cardTitle, {fontSize: 25}]}>We found these places for you</Text>
             <Text style={styles.cardTitle}></Text>
@@ -74,26 +52,6 @@ class Recommendation extends Component {
     );
   }
 
-  // const loadUsers = async () =>
-  //   await fetch("https://jsonplaceholder.typicode.com/users")
-  //     .then(res => (res.ok ? res : Promise.reject(res)))
-  //     .then(res => res.json())
-  //
-  // function getZipCodes(zipCode, distance){
-  //   fetch('https://www.zipcodeapi.com/rest/gZA5DC6sorrMU4qOSdSCXqjuB2ixwXPl6ERebFAVHMbf3Vy9KetjLrYnr6qo6qY6/radius.json/' + zipCode + '/' + distance + '/km', {
-  //        method: 'GET'
-  //     })
-  //     .then((response) => response.json())
-  //     .then((responseJson) => {
-  //        return responseJson;
-  //     })
-  //     .catch((error) => {
-  //        return error;
-  //     });
-  // }
-  // function getStudentsAndScores(){
-  //   return Promise.all([getZipCodes("10044", "5")])
-  // }
   async getRecommendations(){
     origin = this;
 
@@ -103,15 +61,15 @@ class Recommendation extends Component {
         var json = JSON.parse(JSON.stringify(snapshot.val()));
         // alert(json);
         // userzip = json[username];
-        userzip = json[origin.user].zipcode;
-        insurance = json[origin.user].insurance;
+        userzip = json[origin.state.user].zipcode;
+        insurance = json[origin.state.user].insurance;
         // alert(userzip);
       }).catch(function (err) {
       // This is where errors land
       // alert(err);
     });
 
-    const json = await fetch('https://www.zipcodeapi.com/rest/gZA5DC6sorrMU4qOSdSCXqjuB2ixwXPl6ERebFAVHMbf3Vy9KetjLrYnr6qo6qY6/radius.json/' + userzip + '/' + "5" + '/mile', {
+    const json = await fetch('https://www.zipcodeapi.com/rest/nISCSiw4wVBtumHUZ3OgWRvmZog8daVylgWM5LQBWRl746ArCgup4vbS9JaSZMfr/radius.json/' + userzip + '/' + "5" + '/mile', {
              method: 'GET'
           })
           .then((response) => response.json());
@@ -125,6 +83,7 @@ class Recommendation extends Component {
     itemList = [];
     existingPlaces = [];
     origin = this;
+
     var recommendations = db.ref('/nopioid-mobile-app/experiences');
     recommendations.orderByChild('rating').once('value', function(snapshot) {
       var json = JSON.parse(JSON.stringify(snapshot.val()));
@@ -132,7 +91,7 @@ class Recommendation extends Component {
         if (!(existingPlaces.includes(json[x].name)))
         {
           existingPlaces.push(json[x].name);
-          if(zipCodes.includes(json[x].zipcode) && origin.type == json[x].type && insurance == json[x].insurance && origin.user != json[x].user){
+          if(zipCodes.includes(json[x].zipcode) && origin.state.type == json[x].type && insurance == json[x].insurance && origin.state.user != json[x].user){
             itemList.push(
               <View key={x} style={styles.card}>
                 <View style={styles.cardMenuBar}>
@@ -155,58 +114,15 @@ class Recommendation extends Component {
     });
 
   }
-  requireLogin(){
-    this.block = true;
-    const { navigate } = this.props.navigation;
-    if(this.user == ""){
-      navigate("LoginScreen");
-      return true;
-    }else{
-      return false;
-    }
-  }
-
-  emergencyRoomAction(){
-    alert("Feature Coming Soon!");
-  }
-
-  emergencyRoomButtonClick(){
-    origin = this;
-    result = this.requireLogin();
-    if(result){
-      const didBlurSubscription = this.props.navigation.addListener(
-        'willFocus',
-        payload => {
-          if(origin.user == ""){
-
-          }else{
-            this.emergencyRoomAction();
-          }
-          didBlurSubscription.remove();
-        }
-      );
-    }else{
-      this.emergencyRoomAction();
-    }
-  }
-
-  detoxButtonClick(){
-    // alert("hi");
-  }
 
 }
 
 const styles = StyleSheet.create({
 
   scrollView:{
-    marginTop: 10,
     width: "100%",
-    padding: 20,
-    paddingBottom: 0,
-    paddingTop: 0
   },
   scrollViewContainer:{
-    alignItems: "center"
   },
   cardDetail:{
     padding: 7,
@@ -225,10 +141,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: 10,
-    paddingTop: 43,
-    paddingBottom: 30,
-    alignItems: "center"
+    padding: 30,
+    alignItems: "center",
   },
   imageBackground:{
     flex: 1,

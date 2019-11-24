@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { ScrollView, Picker, TextInput, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
-import { parseIconFromClassName } from 'react-native-fontawesome';
-import * as Font from 'expo-font';
-import  IconButton  from './IconButton';
 import  TextBox  from './TextBox';
 import firebase from './FirebaseDatabase';
 import {InteractionManager} from 'react-native';
+import AppActionBar from './AppActionBar'
 
 const _setTimeout = global.setTimeout;
 const _clearTimeout = global.clearTimeout;
@@ -54,15 +51,12 @@ if (Platform.OS === 'android') {
     };
 }
 
-const validIcon = parseIconFromClassName('fas fa-plus');
-const vari = "";
-
 export default class UserAccount extends Component {
   constructor(props) {
         super(props);
       this.createAccountButtonClick = this.createAccountButtonClick.bind(this);
-      this.getUserObject = this.getUserObject.bind(this);
       this.state = {
+        user: "",
         firstname :"",
         lastname : "",
         email : "",
@@ -75,53 +69,48 @@ export default class UserAccount extends Component {
         insurance : "",
         zipcode : ""
       };
-      this.user = "";
       this.userObject = null;
       this.error = false;
       this.canRender = false;
     }
-  state = {
-    fontLoaded: false,
-  };
-  async componentDidMount() {
-    await Font.loadAsync({
-      'Font Awesome': require('./assets/fonts/fontawesome.ttf'),
-    });
-    this.setState({ fontLoaded: true });
-  }
 
-  async getUserObject(){
+  async componentDidMount(prevProps) {
     origin = this;
-    const user = await db.ref('/nopioid-mobile-app/users').child(this.user).once('value').then(function(snapshot) {
-        var json = JSON.parse(JSON.stringify(snapshot.val()));
-        origin.userObject = json;
-        origin.canRender = true;
-      }).catch(function (err) {
-        origin.userObject = null;
-    });
-    this.setState({
-      firstname :origin.userObject.firstname,
-      lastname : origin.userObject.lastname,
-      email : origin.userObject.email,
-      username : origin.userObject.username,
-      password : origin.userObject.password,
-      day : origin.userObject.day,
-      month : origin.userObject.month,
-      year : origin.userObject.year,
-      gender : origin.userObject.gender,
-      insurance : origin.userObject.insurance,
-      zipcode : origin.userObject.zipcode
-    });
+    if ("params" in this.props.navigation.state){
+      if ("user" in this.props.navigation.state.params){
+        userr = this.props.navigation.state.params.user;
+        // alert(user);
+        if (userr != this.state.user){
+          this.setState({user: userr});
+          if (!(this.userObject)){
+            const user = await db.ref('/nopioid-mobile-app/users').child(userr).once('value').then(function(snapshot) {
+                var json = JSON.parse(JSON.stringify(snapshot.val()));
+                origin.userObject = json;
+                origin.canRender = true;
+              }).catch(function (err) {
+                origin.userObject = null;
+            });
+            this.setState({
+              firstname :origin.userObject.firstname,
+              lastname : origin.userObject.lastname,
+              email : origin.userObject.email,
+              username : origin.userObject.username,
+              password : origin.userObject.password,
+              day : origin.userObject.day,
+              month : origin.userObject.month,
+              year : origin.userObject.year,
+              gender : origin.userObject.gender,
+              insurance : origin.userObject.insurance,
+              zipcode : origin.userObject.zipcode
+            });
+          }
+        }
+      }
+    }
   }
 
   render() {
     try {
-      // alert("hi");
-        this.user = this.props.navigation.state.params.user;
-        origin = this;
-        if (!(this.userObject)){
-          this.getUserObject();
-        }
         if (this.error){
           throw 0;
         }
@@ -130,20 +119,8 @@ export default class UserAccount extends Component {
           <ImageBackground
             source={require('./images/nopioid-banner.png')}
             style={styles.imageBackground}>
+            <AppActionBar state={this.state}/>
             <View style={styles.mainContainer}>
-              <View style={styles.actionBar}>
-                {
-                  this.state.fontLoaded ? (
-                    <Text style={styles.actionButtons}>&#xf7a4;</Text>
-                  ) : null
-                }
-                <Text style={styles.mainTitle}>Nopioid</Text>
-                {
-                  this.state.fontLoaded ? (
-                    <Text style={styles.actionButtons}>&#xf007;</Text>
-                  ) : null
-                }
-              </View>
               <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
                 <View style={styles.userBubbleContainer}>
                   <Text style={styles.userBubble}>{origin.state.firstname.charAt(0).toUpperCase() + origin.state.lastname.charAt(0).toUpperCase()}</Text>
@@ -302,7 +279,9 @@ const styles = StyleSheet.create({
   userBubbleContainer:{
     width: "100%",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    textAlign: "center",
+    textAlignVertical: "center",
   },
   userBubble:{
     backgroundColor: "#eee",
@@ -313,7 +292,8 @@ const styles = StyleSheet.create({
     borderColor: '#d1d1d1',
     textAlign: "center",
     textAlignVertical: "center",
-    fontSize: 50
+    fontSize: 50,
+    overflow: "hidden"
   },
   genderDropdown:{
     maxWidth: 500,
@@ -336,12 +316,10 @@ const styles = StyleSheet.create({
   },
   scrollView:{
     width: "100%",
-    padding: 20,
-    paddingBottom: 0
+    height: "100%",
+    padding: 30,
   },
   scrollViewContainer:{
-    justifyContent: "center",
-    alignItems: "center"
   },
   dateOfBirth:{
     flexDirection: "row",
@@ -392,10 +370,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: 10,
-    paddingTop: 43,
-    justifyContent: "center",
-    alignItems: "center"
   },
   imageBackground:{
     flex: 1,

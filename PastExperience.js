@@ -1,30 +1,23 @@
 import React, { Component } from 'react';
 import { ScrollView, Picker, TextInput, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
-import FontAwesome, { SolidIcons, RegularIcons, BrandIcons } from 'react-native-fontawesome';
-import { parseIconFromClassName } from 'react-native-fontawesome';
-import * as Font from 'expo-font';
-import  IconButton  from './IconButton';
 import { withNavigationFocus } from 'react-navigation';
 import { stages } from './Properties';
 import firebase from './FirebaseDatabase';
+import AppActionBar from './AppActionBar'
 
 export const db = firebase.database();
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
-const validIcon = parseIconFromClassName('fas fa-plus')
 
 class PastExperience extends Component {
   constructor(props) {
     super(props);
-    this.stages = [];
-    this.user = "";
-    this.type = "";
     this.nextClick = this.nextClick.bind(this);
     this.state = {
+      user: "",
+      type: "",
       name :"",
+      stages: "",
+      insurance:"",
       zipcode : "",
       coveredByInsurance : false,
       drugScreening : false,
@@ -34,66 +27,51 @@ class PastExperience extends Component {
       buprenorphineTreatment : false,
       rating : ""
     };
-    this.insurance = "";
   }
-  state = {
-    fontLoaded: false,
-  };
-  async componentDidMount() {
-    await Font.loadAsync({
-      'Font Awesome': require('./assets/fonts/fontawesome.ttf'),
-    });
 
-    this.setState({ fontLoaded: true });
-  }
-  render() {
-    try {
-        this.type = this.props.navigation.state.params.type;
-    }
-    catch(error) {
-    }
-    try {
-        this.user = this.props.navigation.state.params.user;
-        origin = this;
+  componentDidMount(prevProps) {
+    if ("params" in this.props.navigation.state){
+      if ("user" in this.props.navigation.state.params){
         user = this.props.navigation.state.params.user;
-        if(this.insurance == ""){
+        origin = this;
+        if (user != this.state.user){
+          this.setState({user: user});
+        }
+        if(this.state.insurance == ""){
           var users = db.ref('/nopioid-mobile-app').child("users");
           users.once('value', function(snapshot) {
            if (snapshot.hasChild(user)) {
              var json = JSON.parse(JSON.stringify(snapshot.val()));
-             origin.insurance = json[user].insurance;
+             origin.state.insurance = json[user].insurance;
            }
           });
         }
+      }
+      if ("type" in this.props.navigation.state.params){
+        type = this.props.navigation.state.params.type;
+        if (type != this.state.type){
+          this.setState({type: type});
+        }
+      }
+      if ("stages" in this.props.navigation.state.params){
+        staging = this.props.navigation.state.params.stages;
+        if (this.state.stages != staging){
+          this.setState({stages: staging});
+        }
+      }
     }
-    catch(error) {
-    }
-    try {
-        this.stages = this.props.navigation.state.params.stages;
-    }
-    catch(error) {
-    }
+  }
+
+  render() {
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
+        <AppActionBar state={this.state}/>
         <View style={styles.mainContainer}>
-          <View style={styles.actionBar}>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf7a4;</Text>
-              ) : null
-            }
-            <Text style={styles.mainTitle}>Nopioid</Text>
-            {
-              this.state.fontLoaded ? (
-                <Text style={styles.actionButtons}>&#xf007;</Text>
-              ) : null
-            }
-          </View>
-            <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
+          <ScrollView contentContainerStyle={styles.scrollViewContainer} style={styles.scrollView}>
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Tell us more about your {this.stages[0]} Experience</Text>
+            <Text style={styles.cardTitle}>Tell us more about your {this.state.stages[0]} Experience</Text>
             <View style={styles.cardContentColumn}>
               <TextInput ref={input => { this.nameTextInput = input }} placeholder="Name" style={styles.loginTextBox} onChangeText = {(text) => this.setState({name : text})}/>
               <TextInput keyboardType = 'numeric' ref={input => { this.zipcodeTextInput = input }} placeholder="Zip Code" style={styles.loginTextBox} onChangeText = {(text) => this.setState({zipcode : text})}/>
@@ -167,7 +145,7 @@ class PastExperience extends Component {
 
   nextClick(){
     origin = this;
-    if (!origin.user){
+    if (!origin.state.user){
       const { replace } = this.props.navigation;
       replace("LoginScreen");
       return;
@@ -196,9 +174,9 @@ class PastExperience extends Component {
       rating != ""){
       var users = db.ref('/nopioid-mobile-app').child("experiences");
       users.push({
-        insurance: origin.insurance,
-        user: origin.user,
-        type: this.stages[0],
+        insurance: origin.state.insurance,
+        user: origin.state.user,
+        type: origin.state.stages[0],
         name: name,
         zipcode: zipcode,
         coveredByInsurance: coveredByInsurance,
@@ -210,12 +188,13 @@ class PastExperience extends Component {
         rating: rating
       }).then(function(snapshot) {
 
-          if (this.stages.length > 1){
-            this.stages.shift();
-            replace("PastExperienceScreen", {user: origin.user, stages: this.stages, type: origin.type});
+          if (origin.state.stages.length > 1){
+            staging = origin.state.stages;
+            staging.shift();
+            replace("PastExperienceScreen", {user: origin.state.user, stages: staging, type: origin.state.type});
           }
           else{
-            replace("RecommendationScreen", {user: origin.user, stages: this.stages, type: origin.type});
+            replace("RecommendationScreen", {user: origin.state.user, stages: origin.state.stages, type: origin.state.type});
           }
       }, function(error) {
         alert('Error submitting form: ' + error);
@@ -247,13 +226,9 @@ const styles = StyleSheet.create({
     color: "#fff"
   },
   scrollView:{
-    marginTop: 30,
     width: "100%",
-    padding: 20,
-    paddingTop: 0
   },
   scrollViewContainer:{
-    alignItems: "center"
   },
   ratingDropdown:{
     maxWidth: 500,
@@ -283,6 +258,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#cb2877',
     padding: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
     textAlign: "center",
     color: "#ddd",
     overflow:"hidden",
@@ -315,8 +292,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    paddingTop: 43,
-    paddingBottom: 10,
+    padding: 30,
     alignItems: "center",
   },
   errorContainer:{

@@ -41,7 +41,6 @@ class AppActionBar extends Component {
           ) : null
         }
       </View>
-      <Text>{JSON.stringify(this.parentState)}</Text>
       </View>
     );
   }
