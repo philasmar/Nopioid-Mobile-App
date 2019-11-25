@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 38538,
   "expoServerNgrokUrl": "https://28-72a.philasmar.nopioid.exp.direct",
   "packagerNgrokUrl": "https://packager.28-72a.philasmar.nopioid.exp.direct",
-  "ngrokPid": 7224,
+  "ngrokPid": 38573,
   "webpackServerPort": null
 }

@@ -55,6 +55,7 @@ export default class UserAccount extends Component {
   constructor(props) {
         super(props);
       this.createAccountButtonClick = this.createAccountButtonClick.bind(this);
+      this.signoutButtonClick = this.signoutButtonClick.bind(this);
       this.state = {
         user: "",
         firstname :"",
@@ -149,6 +150,7 @@ export default class UserAccount extends Component {
                   <TextInput value={origin.state.insurance} ref={input => { this.insuranceTextInput = input }} placeholder="Insurance" style={styles.loginTextBox} onChangeText = {(text) => this.setState({insurance : text})}/>
                   <TextInput value={origin.state.zipcode} keyboardType = 'numeric' ref={input => { this.zipcodeTextInput = input }} placeholder="Zip Code" style={styles.loginTextBox} onChangeText = {(text) => this.setState({zipcode : text})}/>
                   <Text onPress={this.createAccountButtonClick} style={styles.loginButton}>Save</Text>
+                  <Text onPress={this.signoutButtonClick} style={styles.loginButtonBasic}>Sign Out</Text>
                 </View>
                 <View style={styles.scrollViewPadding}/>
               </ScrollView>
@@ -179,6 +181,11 @@ export default class UserAccount extends Component {
       );
     }
 
+  }
+
+  signoutButtonClick(){
+    const { reset } = this.props.navigation;
+    reset([NavigationActions.navigate({ routeName: 'MainScreen', params: {user: ""} })], 0);
   }
 
   createAccountButtonClick(){
@@ -273,8 +280,19 @@ export default class UserAccount extends Component {
 }
 
 const styles = StyleSheet.create({
+  loginButtonBasic:{
+    maxWidth: 180,
+    marginTop: 13,
+    fontSize: 23,
+    textDecorationLine: "underline",
+    textAlign: "center",
+    color: "#000",
+    overflow:"hidden",
+    alignSelf: "center",
+    width: "100%"
+  },
   scrollViewPadding:{
-    marginBottom: 20
+    height: 50
   },
   userBubbleContainer:{
     width: "100%",
@@ -347,6 +365,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#cb2877',
     padding: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
     textAlign: "center",
     color: "#ddd",
     overflow:"hidden",

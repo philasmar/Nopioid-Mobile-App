@@ -14,7 +14,8 @@
       "web"
     ],
     "android": {
-      "package": "me.nopioid.nopioid"
+      "package": "me.nopioid.nopioid",
+      "versionCode": 2,
     },
     "ios": {
       "bundleIdentifier": "me.nopioid.nopioid"
