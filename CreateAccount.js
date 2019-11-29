@@ -162,17 +162,17 @@ export default class CreateAccount extends Component {
 
 
     const { reset } = this.props.navigation;
-    var firstname = this.state.firstname;
-    var lastname = this.state.lastname;
-    var email = this.state.email.toLowerCase();
-    var username = this.state.username.toLowerCase();
-    var password = this.state.password;
-    var day = this.state.day;
-    var month = this.state.month;
-    var year = this.state.year;
+    var firstname = this.state.firstname.trim();
+    var lastname = this.state.lastname.trim();
+    var email = this.state.email.toLowerCase().trim();
+    var username = this.state.username.toLowerCase().trim();
+    var password = this.state.password.trim();
+    var day = this.state.day.trim();
+    var month = this.state.month.trim();
+    var year = this.state.year.trim();
     var gender = this.state.gender;
-    var insurance = this.state.insurance;
-    var zipcode = this.state.zipcode;
+    var insurance = this.state.insurance.trim();
+    var zipcode = this.state.zipcode.trim();
 
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
     {
@@ -182,7 +182,6 @@ export default class CreateAccount extends Component {
     try {
         day = parseInt(day);
         month = parseInt(month);
-        year = parseInt(year);
         year = parseInt(year);
         if (day < 1 || day > 31){
           day = "";

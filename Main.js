@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
+import { Picker, Button, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 import  IconButton  from './IconButton';
 import { NavigationActions, withNavigationFocus } from 'react-navigation';
-import AppActionBar from './AppActionBar'
+import AppActionBar from './AppActionBar';
+import RNPickerSelect from 'react-native-picker-select';
+import { Ionicons } from '@expo/vector-icons';
+import firebase from './FirebaseDatabase';
+export const db = firebase.database();
 
 export default class Main extends Component {
   constructor(props) {
@@ -15,25 +19,77 @@ export default class Main extends Component {
     this.soberHouseButtonClick = this.soberHouseButtonClick.bind(this);
     this.supportGroupButtonClick = this.supportGroupButtonClick.bind(this);
     this.mainRecommenderScreen = this.mainRecommenderScreen.bind(this);
-    this.state = { user: ""};
+    this.state = { user: "", selectedPlace: "", pastRecommendation: [], lastRecommendationType: ""};
   }
   componentDidMount(prevProps) {
     if ("params" in this.props.navigation.state){
       if ("user" in this.props.navigation.state.params){
         user = this.props.navigation.state.params.user;
+        origin = this;
+        itemList = [];
+        pastType = "";
+        hasExperience = false;
         if (user != this.state.user){
+          var recommendations = db.ref('/nopioid-mobile-app/last-recommendations/' + user);
+          recommendations.once('value', function(snapshot) {
+            var json = JSON.parse(JSON.stringify(snapshot.val()));
+            hasExperience = true;
+            pastType = json["type"];
+            for(x in json["places"]){
+              itemList.push(
+                {
+                  label: json["places"][x].name,
+                  value: json["places"][x].name,
+                }
+              );
+            }
+            origin.setState({hasExperience: hasExperience, pastRecommendation: itemList, lastRecommendationType: ""});
+          });
           this.setState({user: user});
         }
       }
     }
   }
   render() {
+    const placeholder = {
+      label: 'Select an experience...',
+      value: null,
+      color: '#0000ee',
+    };
     return (
       <ImageBackground
         source={require('./images/nopioid-banner.png')}
         style={styles.imageBackground}>
         <AppActionBar state={this.state}/>
         <View style={styles.mainContainer}>
+          { this.state.hasExperience ?
+          <View style={styles.fitCard}>
+            <Text style={styles.cardTitle}>Please share your feedback</Text>
+              <RNPickerSelect
+                placeholder={placeholder}
+                items={this.state.pastRecommendation}
+                onValueChange={value => {
+                  this.setState({
+                    selectedPlace: value,
+                  });
+                }}
+                style={{
+                  ...pickerSelectStyles,
+                  iconContainer: {
+                    top: 10,
+                    right: 12,
+                    marginTop: 5,
+                  },
+                }}
+                value={this.state.selectedPlace}
+                useNativeAndroidPickerStyle={false}
+                Icon={() => {
+                  return <Ionicons name="md-arrow-down" size={24} color="white" />;
+                }}
+              />
+          </View>
+          : null
+          }
           <View style={styles.card}>
             <Text style={styles.cardTitle}>What are you looking for?</Text>
             <View style={styles.cardContent}>
@@ -237,10 +293,38 @@ export default class Main extends Component {
 }
 
 const styles = StyleSheet.create({
+
+  genderDropdown:{
+    maxWidth: 500,
+    alignSelf: "center",
+    width: "100%",
+    padding: 7,
+    fontSize: 25,
+    height: 50,
+    backgroundColor: "#fff"
+  },
+  genderDropdownContainer:{
+    padding: 5,
+    maxWidth: 500,
+    marginTop: 15,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    borderWidth: 0.5,
+    borderColor: '#d1d1d1',
+    height: 100
+  },
+  fitCard:{
+    paddingBottom: 15,
+    width: "100%"
+  },
   cardRow:{
     flexDirection: "row",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
+    // backgroundColor: "#ff0000"
   },
   welcomeTitle:{
     textAlignVertical: "center",
@@ -254,8 +338,9 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: 10,
-    paddingBottom: 30,
+    padding: 30,
+    paddingTop: 10,
+    paddingBottom: 10,
     // backgroundColor: "#00ff00"
   },
   imageBackground:{
@@ -294,12 +379,12 @@ const styles = StyleSheet.create({
   card:{
     marginTop: 5,
     marginBottom: 5,
-    padding: 15,
-    paddingTop: 5,
+    paddingBottom: 15,
     // backgroundColor: "#fff",
     // borderRadius: 20,
     // borderWidth: 0.5,
     // borderColor: '#d1d1d1',
+    // backgroundColor: "#00ff00",
     flex: 1
   },
   cardTitle:{
@@ -324,4 +409,30 @@ const styles = StyleSheet.create({
   cardContentIcon:{
     // fontSize: 40
   }
+});
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    marginTop: 5,
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 10,
+    color: 'white',
+    textAlign: "center",
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    marginTop: 5,
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'white',
+    borderRadius: 10,
+    color: 'white',
+    textAlign: "center",
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
 });

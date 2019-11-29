@@ -82,6 +82,7 @@ class Recommendation extends Component {
 
     itemList = [];
     existingPlaces = [];
+    lastRecomendations = [];
     origin = this;
 
     var recommendations = db.ref('/nopioid-mobile-app/experiences');
@@ -92,6 +93,7 @@ class Recommendation extends Component {
         {
           existingPlaces.push(json[x].name);
           if(zipCodes.includes(json[x].zipcode) && origin.state.type == json[x].type && insurance == json[x].insurance && origin.state.user != json[x].user){
+            lastRecomendations.push(json[x].name);
             itemList.push(
               <View key={x} style={styles.card}>
                 <View style={styles.cardMenuBar}>
@@ -112,7 +114,21 @@ class Recommendation extends Component {
 
       origin.setState({itemList: itemList.reverse()});
     });
-
+    var users = db.ref('/nopioid-mobile-app/last-recommendations');
+    users.child(origin.state.user).set({
+      username: origin.state.user,
+      type: origin.state.type,
+      places: lastRecomendations
+    }).then(function(snapshot) {
+        for(var x = 0; x < lastRecomendations.length; x++){
+          var lastexp = db.ref('/nopioid-mobile-app/last-recommendations/' + origin.state.user);
+          lastexp.child("places").push({
+            name: lastRecomendations[x]
+          });
+        }
+    }, function(error) {
+      alert('Could not save recommendations due to the error: ' + error);
+    });
   }
 
 }
