@@ -79,7 +79,6 @@ class Recommendation extends Component {
       zipCodes.push(json.zip_codes[x].zip_code);
       zipDistance[json.zip_codes[x].zip_code] = json.zip_codes[x].distance;
     }
-
     itemList = [];
     existingPlaces = [];
     lastRecomendations = [];

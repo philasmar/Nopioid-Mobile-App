@@ -33,17 +33,22 @@ export default class Main extends Component {
           var recommendations = db.ref('/nopioid-mobile-app/last-recommendations/' + user);
           recommendations.once('value', function(snapshot) {
             var json = JSON.parse(JSON.stringify(snapshot.val()));
-            hasExperience = true;
-            pastType = json["type"];
-            for(x in json["places"]){
-              itemList.push(
-                {
-                  label: json["places"][x].name,
-                  value: json["places"][x].name,
+            if(json){
+              if("type" in json)
+              {
+                hasExperience = true;
+                pastType = json["type"];
+                for(x in json["places"]){
+                  itemList.push(
+                    {
+                      label: json["places"][x].name,
+                      value: json["places"][x].name,
+                    }
+                  );
                 }
-              );
+                origin.setState({hasExperience: hasExperience, pastRecommendation: itemList, lastRecommendationType: ""});
+              }
             }
-            origin.setState({hasExperience: hasExperience, pastRecommendation: itemList, lastRecommendationType: ""});
           });
           this.setState({user: user});
         }
@@ -98,7 +103,7 @@ export default class Main extends Component {
                     style={styles.cardContentButton}
                     iconStyle=""
                     textStyle=""
-                    icon="&#xf2cc;"
+                    icon="&#xf2f1;"
                     text="Detox"
                     onPress={()=>this.detoxButtonClick()}/>
                   <IconButton

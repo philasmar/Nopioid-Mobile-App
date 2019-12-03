@@ -64,7 +64,7 @@ class MainRecommender extends Component {
                   style={styles.cardContentButton}
                   iconStyle={styles.cardContentButtonClicked}
                   textStyle={styles.cardContentButtonClicked}
-                  icon="&#xf2cc;"
+                  icon="&#xf2f1;"
                   text="Detox"
                   onPress={(comp)=>this.detoxButtonClick(comp)}/>
                 :
@@ -76,7 +76,7 @@ class MainRecommender extends Component {
                   style={styles.cardContentButton}
                   iconStyle=""
                   textStyle=""
-                  icon="&#xf2cc;"
+                  icon="&#xf2f1;"
                   text="Detox"
                   onPress={(comp)=>this.detoxButtonClick(comp)}/>
               }
